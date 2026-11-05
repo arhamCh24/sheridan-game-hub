@@ -1,6 +1,7 @@
 # Program Name: Cloud Security (Graduate Certificate)
 - **Credential Level**: Graduate Certificate
 - **Target Students**: graduated students, degree students
+- **Duration**: 1 yr
 - **Interests**: 
   - Specialize in cybersecurity, protecting organizations from cyber attacks, cloud defense.
   - AWS/Azure, cloud computing, cloud infrastructure technologies.
@@ -25,6 +26,7 @@
 # Program Name: Computer Programming (Diploma)
 - **Credential Level**: Diploma
 - **Target Students**: high school students, graduated students
+- **Duration**: 2 yr
 - **Interests**: 
   - Software development, software engineering, fast-track practical coding skills.
   - Building hands-on projects, interactive web & desktop applications.
@@ -49,6 +51,7 @@
 # Program Name: Bachelor of Computer Science (Degree)
 - **Credential Level**: Degree
 - **Target Students**: high school students
+- **Duration**: 4 yr
 - **Interests**: 
   - Computer science theory, advanced mathematics, physics, and complex problem-solving.
   - Building software applications, theoretical research, and core computing foundations.
@@ -73,6 +76,7 @@
 # Program Name: Computer Systems Technician – Cyber Security (Diploma)
 - **Credential Level**: Diploma
 - **Target Students**: high school students
+- **Duration**: 2 yr
 - **Interests**: 
   - Protecting organizations from cyber attacks, ethical hacking, network defense.
   - Practical security labs, IT security support, and hands-on system administration.
@@ -97,6 +101,7 @@
 # Program Name: Computer Systems Technician – Information Technology Infrastructure Services (Diploma)
 - **Credential Level**: Diploma
 - **Target Students**: high school students, graduated students
+- **Duration**: 3 yr
 - **Interests**: 
   - Working with cloud technologies, enterprise hardware, and network management.
   - Intensive practical learning, systems administration, and IT support operations.
@@ -121,6 +126,7 @@
 # Program Name: Bachelor of Information Sciences – Cyber Security (Degree)
 - **Credential Level**: Degree
 - **Target Students**: high school students
+- **Duration**: 4 yr
 - **Interests**: 
   - Protecting organizations from cyber threats, ethical hacking, digital forensics, and security policies.
   - Advanced mathematics, theoretical cyber defense systems, and security governance.
@@ -145,6 +151,7 @@
 # Program Name: Game Development – Advanced Programming (Graduate Certificate)
 - **Credential Level**: Graduate Certificate
 - **Target Students**: high school students, graduated students, degree students
+- **Duration**: 
 - **Interests**: 
   - Building software applications, game engine mechanics, and real-time interactive rendering.
   - Advanced C++/C# programming, 3D math, physics simulations, and graphics pipelines.
@@ -169,6 +176,7 @@
 # Program Name: Interactive Media Management – Digital Design (Graduate Certificate)
 - **Credential Level**: Graduate Certificate
 - **Target Students**: high school students, graduated students, degree students
+- **Duration**: 1 yr
 - **Interests**: 
   - User experience (UX/UI) design, digital content creation, and front-end interactive production.
   - Data visualization, multimedia design, and web technology integration.
@@ -193,6 +201,7 @@
 # Program Name: Network Engineering Technology (Advanced Diploma)
 - **Credential Level**: Advanced Diploma
 - **Target Students**: high school students
+- **Duration**: 
 - **Interests**: 
   - Managing computer networks, cloud connectivity, enterprise routing & switching.
   - Hands-on network automation (Python scripting), hardware architecture, and SDN.
@@ -217,6 +226,7 @@
 # Program Name: Operational Technology Cybersecurity (Graduate Certificate)
 - **Credential Level**: Graduate Certificate
 - **Target Students**: graduated students, degree students
+- **Duration**: 1-2 yr
 - **Interests**: 
   - Cybersecurity specialization in industrial control systems (ICS), SCADA networks, and critical infrastructure.
   - Threat detection and vulnerability assessments in manufacturing, energy, and utility systems.
@@ -241,6 +251,7 @@
 # Program Name: Project Management – Information Technology (Graduate Certificate)
 - **Credential Level**: Graduate Certificate
 - **Target Students**: graduated students, degree students
+- **Duration**: 1-2 yr
 - **Interests**: 
   - IT project leadership, Agile/Scrum methodologies, resource allocation, and risk management.
   - Bridging technical development with business analytics and technology transformation.
@@ -265,6 +276,7 @@
 # Program Name: Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)
 - **Credential Level**: Advanced Diploma
 - **Target Students**: high school students, graduated students
+- **Duration**: 3 yr
 - **Interests**: 
   - Full-stack software development, modern web & mobile applications, and enterprise database management.
   - Network infrastructure, routing, system administration, and DevOps.
@@ -290,6 +302,7 @@
 # Program Name: Artificial Intelligence Development and Applications (Graduate Certificate)
 - **Credential Level**: Graduate Certificate
 - **Target Students**: graduated students, degree students
+- **Duration**: 1-2 yr
 - **Interests**: 
   - Artificial intelligence, machine learning, neural networks, and deep learning algorithms.
   - Python for AI, big data analytics, data visualization, and cloud AI integration.

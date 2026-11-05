@@ -17,6 +17,19 @@ const programPicker = document.querySelector('#programPicker');
 const programPickerToggle = document.querySelector('#programPickerToggle');
 const programPickerStatus = document.querySelector('#programPickerStatus');
 const MAX_COMPARE_PROGRAMS = 3;
+const FIREBASE_SDK_VERSION = '12.19.0';
+const FIREBASE_APP_NAME = 'program-explorer-offline-data';
+const FIREBASE_CONFIG = Object.freeze({
+  apiKey: 'AIzaSyBzz28k956PafBpkqOiOQY9hzprNP_xoSU',
+  authDomain: 'findtheundercover-dea9c.firebaseapp.com',
+  projectId: 'findtheundercover-dea9c',
+  storageBucket: 'findtheundercover-dea9c.firebasestorage.app',
+  messagingSenderId: '503099339526',
+  appId: '1:503099339526:web:2b33b817ab4c3863212487'
+});
+const FIREBASE_QUESTIONS_COLLECTION = 'offline-flow-questions';
+const FIREBASE_PATHS_COLLECTION = 'offline-paths';
+const FIREBASE_QUIZ_CONFIG_COLLECTION = 'quiz-config';
 const welcomeMessage = messages.querySelector('.message.bot').cloneNode(true);
 
 let programs = [];
@@ -26,6 +39,8 @@ let isSending = false;
 let chatSessionId = 0;
 let chatRequestController = null;
 let selectedProgramNames = new Set();
+let offlineFirestorePromise = null;
+const localFallbackDocumentPromises = Object.create(null);
 
 async function loadKnowledge() {
   try {
@@ -35,34 +50,137 @@ async function loadKnowledge() {
     programs = parsePrograms(knowledgeMarkdown);
     if (programs.length !== 14) console.warn(`Expected 14 FAST programs; loaded ${programs.length}.`);
     if (programs.length < 2) throw new Error('The knowledge file needs at least two programs.');
-    try {
-      const offlineResponse = await fetch('offline-questions.json');
-      if (!offlineResponse.ok) throw new Error(`Could not load offline questions (${offlineResponse.status}).`);
-      const offlineQuiz = await offlineResponse.json();
-      if (!Array.isArray(offlineQuiz.questions) || offlineQuiz.questions.length < 1) {
-        throw new Error('The offline question bank is empty or invalid.');
-      }
-      const backgroundQuestion = offlineQuiz.questions[0];
-      if (typeof backgroundQuestion.question === 'string' && Array.isArray(backgroundQuestion.options)) {
-        const backgroundOptions = backgroundQuestion.options.filter(option => typeof option.text === 'string');
-        if (backgroundOptions.length >= 2) {
-          firstQuizQuestion.question = backgroundQuestion.question;
-          firstQuizQuestion.options = backgroundOptions.map(option => option.text);
-          backgroundFlows = Object.fromEntries(backgroundOptions.map(option => [option.text, option.flow]));
-        }
-      }
-      offlineQuizFlows = offlineQuiz.flows || {};
-      offlineRecommendations = offlineQuiz.recommendations || {};
-    } catch (error) {
-      throw new Error(`Could not load offline quiz data: ${error.message}`);
+    const offlineQuiz = await fetch('offline-questions.json').then(response => {
+      if (!response.ok) throw new Error(`Could not load local gateway question (${response.status}).`);
+      return response.json();
+    });
+    if (!Array.isArray(offlineQuiz.questions) || offlineQuiz.questions.length !== 1) {
+      throw new Error('The local gateway question is missing or invalid.');
     }
+    const backgroundQuestion = offlineQuiz.questions[0];
+    if (typeof backgroundQuestion.question !== 'string' || !Array.isArray(backgroundQuestion.options)) {
+      throw new Error('The local gateway question is invalid.');
+    }
+    const backgroundOptions = backgroundQuestion.options.filter(option => typeof option.text === 'string');
+    if (backgroundOptions.length < 2) throw new Error('The local gateway question needs at least two options.');
+    firstQuizQuestion.question = backgroundQuestion.question;
+    firstQuizQuestion.options = backgroundOptions.map(option => option.text);
+    backgroundFlows = Object.fromEntries(backgroundOptions.map(option => [option.text, option.flow]));
+    await loadQuizConfigFromFirestore();
     statusNote.textContent = '';
     renderProgramChecklist();
     renderQuiz();
   } catch (error) {
-    statusNote.textContent = 'Could not load program information. Open this page through a local web server and check that program-knowledge.md is beside it.';
-    quizContent.textContent = 'The quiz needs the program information file to load first.';
+    statusNote.textContent = `Could not load Program Explorer data: ${error.message}`;
+    quizContent.textContent = 'The quiz needs the program guide and local gateway question to load first.';
   }
+}
+
+async function getOfflineFirestore() {
+  if (!offlineFirestorePromise) {
+    offlineFirestorePromise = (async () => {
+      const sdkBase = `https://www.gstatic.com/firebasejs/${FIREBASE_SDK_VERSION}`;
+      const [appSdk, firestoreSdk] = await Promise.all([
+        import(`${sdkBase}/firebase-app.js`),
+        import(`${sdkBase}/firebase-firestore.js`)
+      ]);
+      const firebaseApp = appSdk.getApps().find(app => app.name === FIREBASE_APP_NAME)
+        || appSdk.initializeApp(FIREBASE_CONFIG, FIREBASE_APP_NAME);
+      return { db: firestoreSdk.getFirestore(firebaseApp), firestoreSdk };
+    })().catch(error => {
+      offlineFirestorePromise = null;
+      throw error;
+    });
+  }
+  return offlineFirestorePromise;
+}
+
+async function loadQuizConfigFromFirestore() {
+  try {
+    const { db, firestoreSdk } = await getOfflineFirestore();
+    const snapshot = await firestoreSdk.getDocs(
+      firestoreSdk.query(
+        firestoreSdk.collection(db, FIREBASE_QUIZ_CONFIG_COLLECTION),
+        firestoreSdk.limit(1)
+      )
+    );
+    const remoteTimeout = snapshot.docs[0]?.data()?.responseTimeoutMs;
+    if (Number.isFinite(remoteTimeout) && remoteTimeout >= 0) {
+      QUIZ_RESPONSE_TIMEOUT_MS = remoteTimeout;
+    }
+  } catch (error) {
+    console.warn(`Could not load ${FIREBASE_QUIZ_CONFIG_COLLECTION}; using the local timeout setting.`, error);
+  }
+}
+
+async function loadOfflineFirestoreDocument(collectionName, documentId) {
+  const { db, firestoreSdk } = await getOfflineFirestore();
+  const snapshot = await firestoreSdk.getDoc(
+    firestoreSdk.doc(db, collectionName, documentId)
+  );
+  if (!snapshot.exists()) throw new Error(`Firestore document ${collectionName}/${documentId} does not exist.`);
+  return snapshot.data();
+}
+
+async function loadLocalFallbackDocument(fileName, documentId) {
+  if (!localFallbackDocumentPromises[fileName]) {
+    localFallbackDocumentPromises[fileName] = fetch(fileName).then(response => {
+      if (!response.ok) throw new Error(`Could not load ${fileName} (${response.status}).`);
+      return response.json();
+    }).catch(error => {
+      delete localFallbackDocumentPromises[fileName];
+      throw error;
+    });
+  }
+  const documents = await localFallbackDocumentPromises[fileName];
+  const document = Array.isArray(documents)
+    ? documents.find(item => item.id === documentId)
+    : documents[documentId];
+  if (!document) throw new Error(`Local backup ${fileName} has no document "${documentId}".`);
+  return document;
+}
+
+async function loadFirestoreOrLocalDocument(collectionName, fileName, documentId, isValid) {
+  try {
+    const data = await loadOfflineFirestoreDocument(collectionName, documentId);
+    if (!isValid(data)) throw new Error(`Firestore document ${collectionName}/${documentId} has an invalid structure.`);
+    return data;
+  } catch (firestoreError) {
+    try {
+      const data = await loadLocalFallbackDocument(fileName, documentId);
+      if (!isValid(data)) throw new Error(`Local backup ${fileName} document "${documentId}" has an invalid structure.`);
+      console.warn(`Using ${fileName} because ${collectionName}/${documentId} could not be loaded.`, firestoreError);
+      return data;
+    } catch (localError) {
+      throw new Error(`${firestoreError.message} Local backup failed: ${localError.message}`);
+    }
+  }
+}
+
+async function loadOfflineFlow(flow) {
+  if (offlineQuizFlows[flow]?.questions?.length) return offlineQuizFlows[flow];
+  const documentId = `flow-${flow.toLowerCase()}`;
+  const data = await loadFirestoreOrLocalDocument(
+    FIREBASE_QUESTIONS_COLLECTION,
+    'offline-flow-questions.json',
+    documentId,
+    document => Array.isArray(document.questions) && document.questions.length > 0
+  );
+  offlineQuizFlows[flow] = data;
+  return data;
+}
+
+async function loadOfflinePathRecommendations(flow) {
+  if (offlineRecommendations[flow]) return offlineRecommendations[flow];
+  const documentId = `flow-${flow.toLowerCase()}`;
+  const data = await loadFirestoreOrLocalDocument(
+    FIREBASE_PATHS_COLLECTION,
+    'offline-paths.json',
+    documentId,
+    document => document.recommendations && typeof document.recommendations === 'object'
+  );
+  offlineRecommendations[flow] = data.recommendations;
+  return offlineRecommendations[flow];
 }
 
 function parsePrograms(markdown) {
@@ -71,6 +189,7 @@ function parsePrograms(markdown) {
     return {
       name: heading.trim(),
       credential: readProgramField(lines, 'Credential Level'),
+      duration: readProgramField(lines, 'Duration'),
       target: readProgramField(lines, 'Target Students'),
       curriculum: readProgramField(lines, 'Core Curriculum & Technical Skills'),
       highlights: readProgramField(lines, 'Key Program Highlights'),
@@ -159,7 +278,7 @@ function renderComparisonTable() {
 
   const fields = [
     ['Credential', 'credential'],
-    ['Designed for', 'target'],
+    ['Duration', 'duration'],
     ['Curriculum', 'curriculum'],
     ['Key highlights', 'highlights'],
     ['Career paths', 'careers']
@@ -297,8 +416,6 @@ window.addEventListener('resize', () => {
   }
 });
 exportComparisonButton.addEventListener('click', () => {
-  switchMode('compare');
-  renderComparisonTable();
   window.print();
 });
 document.querySelector('#clearCompareButton').addEventListener('click', () => {
@@ -516,7 +633,9 @@ let localFlowAnswers = [];
 let localFlowQuestionIndex = -1;
 let quizRequestId = 0;
 let quizRequestController = null;
-const QUIZ_RESPONSE_TIMEOUT_MS = 2500;
+let QUIZ_RESPONSE_TIMEOUT_MS = Number.isFinite(window.QUIZ_CONFIG?.responseTimeoutMs)
+  ? Math.max(0, window.QUIZ_CONFIG.responseTimeoutMs)
+  : 2500;
 let quizQuestions = [firstQuizQuestion];
 let quizAnswers = [];
 let currentQuestion = 0;
@@ -614,10 +733,19 @@ function isProgramSuitableForAudience(program) {
   return ['college graduate', 'university graduate', 'working professional', 'career changer'].includes(background);
 }
 
-function showLocalQuizFallback(controller) {
-  if (!selectedLocalFlow || !offlineQuizFlows[selectedLocalFlow]?.questions?.length) return false;
+async function showLocalQuizFallback(controller, requestId) {
+  if (!selectedLocalFlow) return false;
   controller?.abort();
-  quizRequestController = null;
+  if (quizRequestController === controller) quizRequestController = null;
+  try {
+    await loadOfflineFlow(selectedLocalFlow);
+  } catch (error) {
+    if (requestId === quizRequestId) {
+      quizError = `Could not load offline questions from Firebase: ${error.message}`;
+    }
+    return false;
+  }
+  if (requestId !== quizRequestId) return true;
   localQuizMode = true;
   localFlowAnswers = [];
   localFlowQuestionIndex = -1;
@@ -634,6 +762,7 @@ function showLocalQuizFallback(controller) {
 
 async function requestQuizStep() {
   const requestId = ++quizRequestId;
+  let fallbackAttempted = false;
   quizLoading = true;
   quizError = '';
   renderQuiz();
@@ -641,12 +770,16 @@ async function requestQuizStep() {
     if (localQuizMode) {
       await new Promise(resolve => setTimeout(resolve, 200));
       if (requestId !== quizRequestId) return;
+      await loadOfflineFlow(selectedLocalFlow);
+      if (requestId !== quizRequestId) return;
       const nextQuestion = nextLocalQuizQuestion();
       if (nextQuestion) {
         quizQuestions.push(nextQuestion);
         localFlowQuestionIndex = nextQuestion.offlineIndex;
         currentQuestion = quizQuestions.length - 1;
       } else {
+        await loadOfflinePathRecommendations(selectedLocalFlow);
+        if (requestId !== quizRequestId) return;
         quizRecommendations = createLocalRecommendations();
         if (!quizRecommendations.length) throw new Error('No local recommendations are configured for this answer path.');
         currentQuestion = quizQuestions.length;
@@ -684,7 +817,9 @@ async function requestQuizStep() {
       if (requestId !== quizRequestId) return;
 
       if (outcome.type === 'timeout' || outcome.type === 'error') {
-        if (showLocalQuizFallback(controller)) return;
+        fallbackAttempted = true;
+        if (await showLocalQuizFallback(controller, requestId)) return;
+        if (quizError) throw new Error(quizError);
         if (outcome.type === 'error') throw outcome.error;
         throw new Error('The quiz service did not respond. Please try again.');
       }
@@ -696,17 +831,24 @@ async function requestQuizStep() {
       } else if (result.type === 'recommendation' && Array.isArray(result.programs) && result.programs.length) {
         quizRecommendations = result.programs.slice(0, 3);
         currentQuestion = quizQuestions.length;
-      } else if (showLocalQuizFallback(controller)) {
-        return;
       } else {
+        fallbackAttempted = true;
+        if (await showLocalQuizFallback(controller, requestId)) return;
+        if (quizError) throw new Error(quizError);
         throw new Error('The quiz service returned an incomplete result. Please try again.');
       }
     }
   } catch (error) {
-    if (requestId === quizRequestId && (localQuizMode || !showLocalQuizFallback(quizRequestController))) {
-      quizError = error.message.includes('Failed to fetch')
-        ? 'Could not connect to the quiz service. Please check your connection and try again.'
-        : error.message;
+    if (requestId === quizRequestId) {
+      if (!localQuizMode && !fallbackAttempted) {
+        fallbackAttempted = true;
+        if (await showLocalQuizFallback(quizRequestController, requestId)) return;
+      }
+      if (!quizError) {
+        quizError = error.message.includes('Failed to fetch')
+          ? 'Could not connect to the quiz service. Please check your connection and try again.'
+          : error.message;
+      }
     }
   } finally {
     if (requestId === quizRequestId) {
@@ -870,7 +1012,11 @@ function renderQuiz() {
     button.append(letter, label, indicator);
     button.addEventListener('click', () => {
       quizAnswers[currentQuestion] = option;
-      if (currentQuestion === 0) selectedLocalFlow = backgroundFlows[option] || null;
+      if (currentQuestion === 0) {
+        selectedLocalFlow = backgroundFlows[option] || null;
+        localFlowAnswers = [];
+        localFlowQuestionIndex = -1;
+      }
       if (localQuizMode && Number.isInteger(quizQuestions[currentQuestion].offlineIndex)) {
         localFlowAnswers[quizQuestions[currentQuestion].offlineIndex] = option;
       }
@@ -888,8 +1034,7 @@ document.querySelector('#backButton').addEventListener('click', () => {
   if (currentQuestion > 0) {
     currentQuestion--;
     const previousQuestion = quizQuestions[currentQuestion];
-    if (localQuizMode && currentQuestion === 0) {
-      localQuizMode = false;
+    if (currentQuestion === 0) {
       selectedLocalFlow = null;
       localFlowAnswers = [];
       localFlowQuestionIndex = -1;

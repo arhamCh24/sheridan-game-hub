@@ -747,19 +747,16 @@
     background: #fff;
   }
 
-  body.program-explorer * {
-    visibility: hidden;
-  }
-
-  body.program-explorer .game-main,
-  body.program-explorer .game-shell,
-  body.program-explorer .program-explorer-content,
-  body.program-explorer .compare-panel,
-  body.program-explorer .compare-panel * {
-    visibility: visible;
+  body.program-explorer > :not(.game-main),
+  body.program-explorer .game-main > :not(.game-shell),
+  body.program-explorer .game-shell > :not(.program-explorer-content),
+  body.program-explorer .program-explorer-content > :not(.compare-panel),
+  body.program-explorer .compare-panel > :not(.comparison-results) {
+    display: none !important;
   }
 
   body.program-explorer .game-main {
+    display: block !important;
     width: 100%;
     margin: 0;
     padding: 0;
@@ -798,6 +795,7 @@
 
   body.program-explorer .comparison-table-wrap {
     display: block !important;
+    width: 100%;
     height: auto;
     max-height: none;
     overflow: visible;
@@ -818,6 +816,15 @@
     min-width: 0;
     table-layout: fixed;
     font-size: 9pt;
+  }
+
+  body.program-explorer .comparison-table thead {
+    display: table-header-group;
+  }
+
+  body.program-explorer .comparison-table tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
   }
 
   body.program-explorer .comparison-table th,
