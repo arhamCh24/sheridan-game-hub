@@ -1,8 +1,4 @@
-/* Global layout and page background */
-* {
-  box-sizing: border-box;
-}
-
+/* Page layout and background */
 .app-container {
   min-height: 100vh;
   padding: 32px 24px 64px;
@@ -32,46 +28,7 @@
   margin: 0 auto;
 }
 
-.confirm-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 30;
-  display: grid;
-  padding: 20px;
-  place-items: center;
-  background: rgba(15, 23, 42, .42);
-}
-
-.confirm-dialog {
-  width: min(400px, 100%);
-  padding: 28px 24px;
-  border: 1px solid #e0e7ff;
-  border-radius: 20px;
-  background: white;
-  box-shadow: 0 24px 70px rgba(15, 23, 42, .28);
-}
-
-.confirm-dialog h2 {
-  margin: 0 0 10px;
-  color: #312e81;
-}
-
-.confirm-dialog p {
-  color: #64748b;
-}
-
-.confirm-actions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 22px;
-}
-
-.confirm-actions button {
-  width: auto;
-  margin: 0;
-}
-
+/* The shared Game Hub chrome supplies the player modal. */
 .modal-close {
   position: absolute;
   top: 8px;
@@ -82,95 +39,7 @@
   font-size: 1.5rem;
 }
 
-/* Sign-in form and error messages */
-.auth-panel {
-  max-width: 460px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.auth-panel h2 {
-  margin-top: 0;
-  color: #312e81;
-}
-
-.auth-form {
-  display: grid;
-  gap: 12px;
-}
-
-.auth-form input {
-  width: 100%;
-  padding: 13px 14px;
-  border: 1px solid #c7d2fe;
-  border-radius: 10px;
-  font: inherit;
-}
-
-.auth-form .primary-button {
-  margin-top: 8px;
-}
-
-.google-button {
-  width: 100%;
-  margin-top: 12px;
-  color: #1f2937;
-  background: white;
-  border: 1px solid #cbd5e1;
-}
-
-.text-button {
-  display: block;
-  margin: 12px auto 0;
-  padding: 4px 8px;
-  color: #4338ca;
-  background: transparent;
-  font-size: .9rem;
-}
-
-.success-msg {
-  color: #15803d !important;
-  font-weight: 700;
-}
-
-.account-bar {
-  position: fixed;
-  top: 78px;
-  right: 22px;
-  z-index: 9;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.account-avatar {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  place-items: center;
-  overflow: hidden;
-  border: 2px solid white;
-  border-radius: 50%;
-  color: white;
-  background: #6366f1;
-  box-shadow: 0 4px 12px rgba(49, 46, 129, .25);
-}
-
-.account-avatar img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.account-avatar span {
-  font-size: 1rem;
-  font-weight: 800;
-}
-
+/* Loading and error states */
 .loading-msg {
   margin: 80px auto;
   color: #64748b;
@@ -295,12 +164,6 @@ button:disabled {
 }
 
 /* Clues and game controls */
-.npc-card h2 {
-  margin: 4px 0 12px;
-  color: #475569;
-  font-size: 1rem;
-}
-
 .npc-card ul {
   flex: 1 1 0;
   min-height: 0;
@@ -352,31 +215,6 @@ button:disabled {
 }
 
 /* Final game result */
-.result-banner {
-  max-width: 600px;
-  margin: 30px auto 0;
-  padding: 24px;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 14px 30px rgba(71, 85, 105, .12);
-}
-
-.result-banner h2 {
-  margin-top: 0;
-}
-
-.result-banner p {
-  color: #64748b;
-}
-
-.result-banner.WON h2 {
-  color: #15803d;
-}
-
-.result-banner.LOST h2 {
-  color: #b91c1c;
-}
-
 .score-actions {
   display: flex;
   justify-content: center;
@@ -450,29 +288,6 @@ button:disabled {
 .undercover-page .secondary-button {
   color: #07447f;
   background: #e5f2fc;
-}
-
-.undercover-page .auth-panel h2,
-.undercover-page .confirm-dialog h2 {
-  color: var(--navy);
-}
-
-.undercover-page .auth-form input {
-  border-color: #c5d9e9;
-}
-
-.undercover-page .text-button {
-  color: #0b68a6;
-}
-
-.undercover-page .account-avatar {
-  background: #0b3973;
-  box-shadow: 0 4px 12px rgba(11, 57, 115, 0.25);
-}
-
-.undercover-page .result-banner {
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
 }
 
 .undercover-page .leaderboard-message {
@@ -645,12 +460,6 @@ button:disabled {
 
   .undercover-page .header-inner {
     min-height: 72px;
-  }
-
-  .undercover-page .brand-spark {
-    width: 38px;
-    height: 38px;
-    font-size: 28px;
   }
 
   .undercover-page .brand-text strong {

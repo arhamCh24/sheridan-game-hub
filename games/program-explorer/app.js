@@ -20,7 +20,6 @@ const welcomeMessage = messages.querySelector('.message.bot').cloneNode(true);
 
 let programs = [];
 let knowledgeMarkdown = '';
-let backgroundTargetLevels = Object.create(null);
 let chatHistory = [];
 let isSending = false;
 let chatSessionId = 0;
@@ -39,30 +38,22 @@ async function loadKnowledge() {
       const offlineResponse = await fetch('offline-questions.json');
       if (!offlineResponse.ok) throw new Error(`Could not load offline questions (${offlineResponse.status}).`);
       const offlineQuiz = await offlineResponse.json();
-      if (!Array.isArray(offlineQuiz.questions) || offlineQuiz.questions.length < 2) {
+      if (!Array.isArray(offlineQuiz.questions) || offlineQuiz.questions.length < 1) {
         throw new Error('The offline question bank is empty or invalid.');
       }
       const backgroundQuestion = offlineQuiz.questions[0];
       if (typeof backgroundQuestion.question === 'string' && Array.isArray(backgroundQuestion.options)) {
-        const backgroundOptions = backgroundQuestion.options.filter(option =>
-          typeof option.text === 'string' && Array.isArray(option.target_level)
-        );
+        const backgroundOptions = backgroundQuestion.options.filter(option => typeof option.text === 'string');
         if (backgroundOptions.length >= 2) {
           firstQuizQuestion.question = backgroundQuestion.question;
           firstQuizQuestion.options = backgroundOptions.map(option => option.text);
-          backgroundTargetLevels = Object.fromEntries(backgroundOptions.map(option => [option.text, option.target_level]));
+          backgroundFlows = Object.fromEntries(backgroundOptions.map(option => [option.text, option.flow]));
         }
       }
-      localQuizQuestionBank.splice(0, localQuizQuestionBank.length, ...offlineQuiz.questions.slice(1)
-        .filter(item => typeof item.question === 'string' && Array.isArray(item.options))
-        .map(item => ({
-          id: Number(item.id),
-          question: item.question,
-          options: item.options.filter(option => typeof option.text === 'string').map(option => option.text)
-        }))
-        .filter(item => Number.isInteger(item.id) && item.options.length >= 2));
+      offlineQuizFlows = offlineQuiz.flows || {};
+      offlineRecommendations = offlineQuiz.recommendations || {};
     } catch (error) {
-      console.warn('Offline quiz question bank could not be loaded:', error.message);
+      throw new Error(`Could not load offline quiz data: ${error.message}`);
     }
     statusNote.textContent = '';
     renderProgramChecklist();
@@ -279,6 +270,7 @@ compareTab.addEventListener('click', () => switchMode('compare'));
 messages.addEventListener('click', event => {
   if (!event.target.closest('#quizInlineLink')) return;
   event.preventDefault();
+  resetQuiz();
   switchMode('quiz');
   quizTab.focus();
 });
@@ -389,10 +381,16 @@ const firstQuizQuestion = {
     'I’m exploring different fields.'
   ]
 };
-const QUIZ_RESPONSE_TIMEOUT_MS = 2500;
-const ENABLE_LOCAL_QUIZ_FALLBACK = true;
-const localQuizQuestionBank = [];
+let offlineQuizFlows = {};
+let offlineRecommendations = {};
+let backgroundFlows = Object.create(null);
+let selectedLocalFlow = null;
 let localQuizMode = false;
+let localFlowAnswers = [];
+let localFlowQuestionIndex = -1;
+let quizRequestId = 0;
+let quizRequestController = null;
+const QUIZ_RESPONSE_TIMEOUT_MS = 2500;
 let quizQuestions = [firstQuizQuestion];
 let quizAnswers = [];
 let currentQuestion = 0;
@@ -401,104 +399,210 @@ let quizLoading = false;
 let quizError = '';
 
 function nextLocalQuizQuestion() {
-  const nextQuestionNumber = quizQuestions.length + 1;
-  return localQuizQuestionBank.find(item => item.id === nextQuestionNumber) || null;
+  const flowQuestions = selectedLocalFlow && offlineQuizFlows[selectedLocalFlow]?.questions;
+  if (!Array.isArray(flowQuestions)) return null;
+  const nextQuestionIndex = localFlowQuestionIndex + 1;
+  const item = flowQuestions[nextQuestionIndex];
+  if (!item || typeof item.question !== 'string' || !Array.isArray(item.options)) return null;
+  return {
+    id: item.id,
+    offlineIndex: nextQuestionIndex,
+    question: item.question,
+    options: item.options.map(option => typeof option === 'string' ? option : option.text).filter(Boolean)
+  };
+}
+
+function getLocalPathScores() {
+  const scores = Object.fromEntries(['path1', 'path2', 'path3', 'path4', 'path5'].map(path => [path, 0]));
+  const questions = offlineQuizFlows[selectedLocalFlow]?.questions || [];
+  localFlowAnswers.forEach((answer, answerIndex) => {
+    const option = questions[answerIndex]?.options?.find(item =>
+      (typeof item === 'string' ? item : item.text) === answer
+    );
+    Object.entries(option?.path_points || {}).forEach(([path, points]) => {
+      if (Object.hasOwn(scores, path) && Number.isFinite(points)) scores[path] += points;
+    });
+  });
+  return scores;
+}
+
+function createLocalRecommendations() {
+  const scores = getLocalPathScores();
+  const pathSettings = offlineRecommendations[selectedLocalFlow] || {};
+  const eligiblePaths = Object.entries(pathSettings).map(([path, detail]) => ({
+    path,
+    detail,
+    score: scores[path] || 0,
+    programs: (detail.programs || [])
+      .map(resolveCatalogProgramName)
+      .filter(program => program && isProgramSuitableForAudience(program))
+  })).filter(item => item.programs.length > 0)
+    .sort((left, right) => right.score - left.score);
+  if (!eligiblePaths.length) return [];
+
+  const highestScore = eligiblePaths[0].score;
+  const tiedPaths = eligiblePaths.filter(item => item.score === highestScore);
+  const topPaths = highestScore > 0 && tiedPaths.length > 1 ? tiedPaths : [eligiblePaths[0]];
+  const recommendations = [];
+  const addRecommendation = (pathMatch, program) => {
+    if (recommendations.some(item => item.catalogName === program.name)) return;
+    recommendations.push({
+      name: program.name,
+      catalogName: program.name,
+      reason: `Your answers matched the ${pathMatch.detail.title} path (${pathMatch.score} point${pathMatch.score === 1 ? '' : 's'}).`
+    });
+  };
+
+  if (topPaths.length > 1) {
+    topPaths.slice(0, 3).forEach(pathMatch => addRecommendation(pathMatch, pathMatch.programs[0]));
+  } else {
+    topPaths[0].programs.slice(0, 3).forEach(program => addRecommendation(topPaths[0], program));
+  }
+
+  for (const pathMatch of eligiblePaths) {
+    if (topPaths.includes(pathMatch)) continue;
+    for (const program of pathMatch.programs) {
+      addRecommendation(pathMatch, program);
+      if (recommendations.length === 3) return recommendations;
+    }
+  }
+  return recommendations;
+}
+
+function resolveCatalogProgramName(name) {
+  return programs.find(program => program.name === name) || null;
+}
+
+function isProgramSuitableForAudience(program) {
+  const target = program.target.toLowerCase();
+  const targetMatches = selectedLocalFlow === 'A'
+    ? target.includes('high school students')
+    : target.includes('graduated students') || target.includes('degree students');
+  if (!targetMatches) return false;
+
+  const isGraduateCertificate = program.credential.toLowerCase().includes('graduate certificate');
+  if (!isGraduateCertificate) return true;
+  if (selectedLocalFlow !== 'B') return false;
+
+  const background = localFlowAnswers[0]?.toLowerCase();
+  return ['college graduate', 'university graduate', 'working professional', 'career changer'].includes(background);
 }
 
 function showLocalQuizFallback(controller) {
-  if (!ENABLE_LOCAL_QUIZ_FALLBACK) return false;
-  const fallbackQuestion = quizAnswers.length < 7 ? nextLocalQuizQuestion() : null;
-  if (!fallbackQuestion) return false;
+  if (!selectedLocalFlow || !offlineQuizFlows[selectedLocalFlow]?.questions?.length) return false;
+  controller?.abort();
+  quizRequestController = null;
   localQuizMode = true;
-  controller.abort();
-  quizQuestions.push(fallbackQuestion);
-  currentQuestion = quizQuestions.length - 1;
+  localFlowAnswers = [];
+  localFlowQuestionIndex = -1;
+  quizQuestions = [firstQuizQuestion];
+  quizAnswers = quizAnswers.slice(0, 1);
+  quizRecommendations = [];
+  const firstLocalQuestion = nextLocalQuizQuestion();
+  if (!firstLocalQuestion) return false;
+  quizQuestions.push(firstLocalQuestion);
+  localFlowQuestionIndex = firstLocalQuestion.offlineIndex;
+  currentQuestion = 1;
   return true;
 }
 
 async function requestQuizStep() {
+  const requestId = ++quizRequestId;
   quizLoading = true;
   quizError = '';
   renderQuiz();
   try {
     if (localQuizMode) {
-      const fallbackQuestion = quizAnswers.length < 7 ? nextLocalQuizQuestion() : null;
-      if (fallbackQuestion) {
-        await new Promise(resolve => setTimeout(resolve, 300));
-        quizQuestions.push(fallbackQuestion);
+      await new Promise(resolve => setTimeout(resolve, 200));
+      if (requestId !== quizRequestId) return;
+      const nextQuestion = nextLocalQuizQuestion();
+      if (nextQuestion) {
+        quizQuestions.push(nextQuestion);
+        localFlowQuestionIndex = nextQuestion.offlineIndex;
         currentQuestion = quizQuestions.length - 1;
+      } else {
+        quizRecommendations = createLocalRecommendations();
+        if (!quizRecommendations.length) throw new Error('No local recommendations are configured for this answer path.');
+        currentQuestion = quizQuestions.length;
+      }
+    } else {
+      const controller = new AbortController();
+      quizRequestController = controller;
+      const quizUrl = new URL(window.CHAT_API_URL);
+      quizUrl.pathname = quizUrl.pathname.replace(/\/api\/chat\/?$/, '/api/quiz');
+      const requestPromise = fetch(quizUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          answers: quizAnswers.map((answer, index) => ({
+            question: quizQuestions[index].question,
+            answer,
+            ...(index === 0 && backgroundFlows[answer] ? { flow: backgroundFlows[answer] } : {})
+          })),
+          knowledge: knowledgeMarkdown
+        })
+      }).then(async response => {
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || `Quiz service returned ${response.status}.`);
+        return result;
+      });
+      let timeoutId;
+      const outcome = await Promise.race([
+        requestPromise.then(result => ({ type: 'response', result }), error => ({ type: 'error', error })),
+        new Promise(resolve => {
+          timeoutId = setTimeout(() => resolve({ type: 'timeout' }), QUIZ_RESPONSE_TIMEOUT_MS);
+        })
+      ]);
+      clearTimeout(timeoutId);
+      if (requestId !== quizRequestId) return;
+
+      if (outcome.type === 'timeout' || outcome.type === 'error') {
+        if (showLocalQuizFallback(controller)) return;
+        if (outcome.type === 'error') throw outcome.error;
+        throw new Error('The quiz service did not respond. Please try again.');
+      }
+
+      const result = outcome.result;
+      if (result.type === 'question' && result.question && Array.isArray(result.options) && result.options.length >= 2) {
+        quizQuestions.push({ question: result.question, options: result.options });
+        currentQuestion = quizQuestions.length - 1;
+      } else if (result.type === 'recommendation' && Array.isArray(result.programs) && result.programs.length) {
+        quizRecommendations = result.programs.slice(0, 3);
+        currentQuestion = quizQuestions.length;
+      } else if (showLocalQuizFallback(controller)) {
         return;
+      } else {
+        throw new Error('The quiz service returned an incomplete result. Please try again.');
       }
     }
-
-    const recommendNow = localQuizMode && !nextLocalQuizQuestion();
-    const quizUrl = new URL(window.CHAT_API_URL);
-    quizUrl.pathname = quizUrl.pathname.replace(/\/api\/chat\/?$/, '/api/quiz');
-    const controller = new AbortController();
-    const requestPromise = fetch(quizUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
-      body: JSON.stringify({
-        answers: quizAnswers.map((answer, index) => ({
-          question: quizQuestions[index].question,
-          answer,
-          ...(index === 0 && backgroundTargetLevels[answer]
-            ? { target_level: backgroundTargetLevels[answer] }
-            : {})
-        })),
-        knowledge: knowledgeMarkdown,
-        localMode: localQuizMode,
-        recommendNow
-      })
-    }).then(async response => {
-      const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.error || `Quiz service returned ${response.status}.`);
-      return result;
-    });
-    let timeoutId;
-    let outcome = await Promise.race([
-      requestPromise.then(result => ({ type: 'response', result }), error => ({ type: 'error', error })),
-      new Promise(resolve => {
-        timeoutId = setTimeout(() => resolve({ type: 'timeout' }), QUIZ_RESPONSE_TIMEOUT_MS);
-      })
-    ]);
-    clearTimeout(timeoutId);
-
-    if (outcome.type === 'timeout') {
-      if (!recommendNow && showLocalQuizFallback(controller)) return;
-      outcome = await requestPromise.then(result => ({ type: 'response', result }), error => ({ type: 'error', error }));
-    }
-    if (outcome.type === 'error') {
-      if (!recommendNow && showLocalQuizFallback(controller)) return;
-      throw outcome.error;
-    }
-    const result = outcome.result;
-    if (result.type === 'question' && result.question && Array.isArray(result.options) && result.options.length >= 2) {
-      quizQuestions.push({ question: result.question, options: result.options });
-      currentQuestion = quizQuestions.length - 1;
-    } else if (result.type === 'recommendation' && Array.isArray(result.programs) && result.programs.length) {
-      quizRecommendations = result.programs.slice(0, 2);
-      currentQuestion = quizQuestions.length;
-    } else {
-      throw new Error('The quiz service returned an incomplete result. Please try again.');
-    }
   } catch (error) {
-    quizError = error.message.includes('Failed to fetch')
-      ? 'Could not connect to the quiz service. Please check your connection and try again.'
-      : error.message;
+    if (requestId === quizRequestId && (localQuizMode || !showLocalQuizFallback(quizRequestController))) {
+      quizError = error.message.includes('Failed to fetch')
+        ? 'Could not connect to the quiz service. Please check your connection and try again.'
+        : error.message;
+    }
   } finally {
-    quizLoading = false;
-    renderQuiz();
+    if (requestId === quizRequestId) {
+      quizRequestController = null;
+      quizLoading = false;
+      renderQuiz();
+    }
   }
 }
 
 function resetQuiz() {
+  quizRequestId++;
+  quizRequestController?.abort();
+  quizRequestController = null;
   quizQuestions = [firstQuizQuestion];
   quizAnswers = [];
   currentQuestion = 0;
   quizRecommendations = [];
+  selectedLocalFlow = null;
   localQuizMode = false;
+  localFlowAnswers = [];
+  localFlowQuestionIndex = -1;
   quizLoading = false;
   quizError = '';
   renderQuiz();
@@ -523,12 +627,11 @@ function renderQuiz() {
     label.textContent = 'Programs that could be a good fit for you';
     card.append(label);
     quizRecommendations.forEach((recommendation, index) => {
-      const program = programs.find(item => item.name.toLowerCase() === recommendation.name.toLowerCase());
-      if (!program) return;
+      const program = programs.find(item => item.name === (recommendation.catalogName || recommendation.name));
       const programCard = document.createElement('article');
       programCard.className = 'recommended-program-card';
       const heading = document.createElement('h3');
-      heading.textContent = `${index + 1}. ${program.name}`;
+      heading.textContent = `${index + 1}. ${recommendation.name}`;
       programCard.append(heading);
       const reason = document.createElement('p');
       reason.textContent = recommendation.reason;
@@ -538,12 +641,15 @@ function renderQuiz() {
       credentialLabel.textContent = 'Credential: ';
       const careersLabel = document.createElement('strong');
       careersLabel.textContent = 'Career paths: ';
-      details.append(credentialLabel, document.createTextNode(program.credential), document.createElement('br'), careersLabel, document.createTextNode(program.careers));
-      programCard.append(details);
+      if (program) {
+        details.append(credentialLabel, document.createTextNode(program.credential), document.createElement('br'), careersLabel, document.createTextNode(program.careers));
+        programCard.append(details);
+      }
       const learnMore = document.createElement('button');
       learnMore.className = 'text-button learn-more-button';
       learnMore.type = 'button';
       learnMore.textContent = 'Learn more about this program';
+      learnMore.hidden = !program;
       learnMore.addEventListener('click', () => {
         switchMode('chat');
         void sendChatMessage(`Tell me more about the ${program.name} program, including its curriculum, key highlights, and career paths.`);
@@ -551,13 +657,16 @@ function renderQuiz() {
       programCard.append(learnMore);
       card.append(programCard);
     });
-    if (quizRecommendations.length > 1) {
+    const comparableRecommendations = quizRecommendations
+      .map(item => ({ ...item, catalogName: item.catalogName || resolveCatalogProgramName(item.name) }))
+      .filter(item => item.catalogName);
+    if (comparableRecommendations.length > 1) {
       const compareRecommendations = document.createElement('button');
       compareRecommendations.className = 'primary-button compare-recommendations-button';
       compareRecommendations.type = 'button';
       compareRecommendations.textContent = 'Compare my recommendations';
       compareRecommendations.addEventListener('click', () => {
-        selectProgramsForComparison(quizRecommendations.map(item => item.name));
+        selectProgramsForComparison(comparableRecommendations.map(item => item.catalogName));
       });
       card.append(compareRecommendations);
     }
@@ -567,7 +676,10 @@ function renderQuiz() {
 
   const question = quizQuestions[currentQuestion];
   count.textContent = `Question ${currentQuestion + 1}`;
-  progress.style.width = `${Math.min(95, ((currentQuestion + 1) / 7) * 100)}%`;
+  const flowLength = offlineQuizFlows[selectedLocalFlow]?.questions?.length
+    ?? Math.max(0, ...Object.values(offlineQuizFlows).map(flow => flow.questions?.length || 0));
+  const totalQuestions = flowLength + 1;
+  progress.style.width = `${Math.min(95, ((currentQuestion + 1) / totalQuestions) * 100)}%`;
   progress.classList.toggle('is-loading', quizLoading);
   back.hidden = currentQuestion === 0 || quizLoading;
   restart.hidden = true;
@@ -626,6 +738,10 @@ function renderQuiz() {
     button.append(letter, label, indicator);
     button.addEventListener('click', () => {
       quizAnswers[currentQuestion] = option;
+      if (currentQuestion === 0) selectedLocalFlow = backgroundFlows[option] || null;
+      if (localQuizMode && Number.isInteger(quizQuestions[currentQuestion].offlineIndex)) {
+        localFlowAnswers[quizQuestions[currentQuestion].offlineIndex] = option;
+      }
       quizQuestions = quizQuestions.slice(0, currentQuestion + 1);
       quizAnswers = quizAnswers.slice(0, currentQuestion + 1);
       quizRecommendations = [];
@@ -639,6 +755,16 @@ function renderQuiz() {
 document.querySelector('#backButton').addEventListener('click', () => {
   if (currentQuestion > 0) {
     currentQuestion--;
+    const previousQuestion = quizQuestions[currentQuestion];
+    if (localQuizMode && currentQuestion === 0) {
+      localQuizMode = false;
+      selectedLocalFlow = null;
+      localFlowAnswers = [];
+      localFlowQuestionIndex = -1;
+    } else if (localQuizMode && Number.isInteger(previousQuestion?.offlineIndex)) {
+      localFlowAnswers = localFlowAnswers.slice(0, previousQuestion.offlineIndex);
+      localFlowQuestionIndex = previousQuestion.offlineIndex;
+    }
     quizQuestions = quizQuestions.slice(0, currentQuestion + 1);
     quizAnswers = quizAnswers.slice(0, currentQuestion);
     quizRecommendations = [];

@@ -18,11 +18,9 @@ const state = {
   selectedNpcId: null,
   attemptsLeft: MAX_ATTEMPTS,
   score: 0,
-  roundsWon: 0,
   scoreSettled: false,
   scoreResult: null,
   scoreError: '',
-  pendingStatus: null,
   roundOutcome: null,
   timeLeft: null,
   timerId: null,
@@ -97,11 +95,9 @@ async function startGame() {
   state.selectedNpcId = null;
   state.attemptsLeft = MAX_ATTEMPTS;
   state.score = 0;
-  state.roundsWon = 0;
   state.scoreSettled = false;
   state.scoreResult = null;
   state.scoreError = '';
-  state.pendingStatus = null;
   state.roundOutcome = null;
   state.timeLeft = null;
   state.feedback = '';
@@ -143,23 +139,20 @@ function revealMoreClues() {
   render();
 }
 
-async function submitFinalScore() {
+async function submitFinalScore(finalStatus) {
   state.status = 'SAVING';
   state.scoreError = '';
   render();
   try {
     state.scoreResult = await store.submitScore('find-undercover', state.score);
-    state.status = state.pendingStatus;
   } catch (error) {
     state.scoreError = error?.message || 'Could not save your score.';
-    state.status = state.pendingStatus;
   }
+  state.status = finalStatus;
   render();
 }
 
 function finishGame(status) {
-  state.pendingStatus = status;
-  state.status = 'SAVING';
   if (!state.scoreSettled) {
     state.score += state.attemptsLeft * 2;
     state.scoreSettled = true;
@@ -168,7 +161,7 @@ function finishGame(status) {
   state.feedback = '';
   stopClock();
   setGameplayActive(false);
-  submitFinalScore();
+  submitFinalScore(status);
 }
 
 function nextRound() {
@@ -190,13 +183,10 @@ function submitVote() {
   if (npc?.role === 'UNDERCOVER') {
     state.roundOutcome = 'FOUND';
     playSound('CorrectAnswer');
+    state.score += 30;
     if (state.round === TOTAL_ROUNDS) {
-      state.score += 30;
-      state.roundsWon += 1;
       finishGame('WON');
     } else {
-      state.score += 30;
-      state.roundsWon += 1;
       state.status = 'ROUND_RESULT';
       state.selectedNpcId = null;
       state.feedback = '';
