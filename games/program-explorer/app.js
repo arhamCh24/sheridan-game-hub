@@ -13,9 +13,10 @@ const comparisonResults = document.querySelector('#comparisonResults');
 const compareSelectedButton = document.querySelector('#compareSelectedButton');
 const exportComparisonButton = document.querySelector('#exportComparisonButton');
 const compareSelectionCount = document.querySelector('#compareSelectionCount');
+const programPicker = document.querySelector('#programPicker');
+const programPickerToggle = document.querySelector('#programPickerToggle');
+const programPickerStatus = document.querySelector('#programPickerStatus');
 const MAX_COMPARE_PROGRAMS = 3;
-const COMPARISON_LABEL_COLUMN_WIDTH = 160;
-const COMPARISON_PROGRAM_COLUMN_WIDTH = 320;
 const welcomeMessage = messages.querySelector('.message.bot').cloneNode(true);
 
 let programs = [];
@@ -130,6 +131,15 @@ function updateCompareSelection() {
       : `${count} programs selected.`;
   compareSelectedButton.disabled = count < 2;
   exportComparisonButton.disabled = count < 2;
+  programPickerStatus.textContent = `${count} ${count === 1 ? 'program is' : 'programs are'} selected`;
+  if (count === 0) setProgramPickerExpanded(true);
+}
+
+function setProgramPickerExpanded(expanded) {
+  programPicker.hidden = !expanded;
+  programPickerToggle.setAttribute('aria-expanded', String(expanded));
+  programPickerToggle.textContent = expanded ? 'Hide program choices ↑' : 'Choose programs ↓';
+  comparePanel.classList.toggle('program-picker-collapsed', !expanded);
 }
 
 function selectProgramsForComparison(names) {
@@ -143,6 +153,7 @@ function renderComparisonTable() {
   const selected = programs.filter(program => selectedProgramNames.has(program.name));
   if (selected.length < 2) {
     comparisonResults.replaceChildren();
+    if (selectedProgramNames.size === 0) setProgramPickerExpanded(true);
     return;
   }
 
@@ -158,7 +169,6 @@ function renderComparisonTable() {
   const table = document.createElement('table');
   table.className = 'comparison-table';
   table.style.tableLayout = 'fixed';
-  table.style.width = `${COMPARISON_LABEL_COLUMN_WIDTH + COMPARISON_PROGRAM_COLUMN_WIDTH * selected.length}px`;
   const head = document.createElement('thead');
   const headerRow = document.createElement('tr');
   const detailHeader = document.createElement('th');
@@ -198,6 +208,7 @@ function renderComparisonTable() {
   table.append(head, body);
   wrapper.append(table);
   comparisonResults.replaceChildren(wrapper, createMobileComparison(selected, fields));
+  setProgramPickerExpanded(false);
 }
 
 function createMobileComparison(selected, fields) {
@@ -276,6 +287,15 @@ messages.addEventListener('click', event => {
 });
 document.querySelector('#resetChatButton').addEventListener('click', resetChat);
 compareSelectedButton.addEventListener('click', renderComparisonTable);
+programPickerToggle.addEventListener('click', () => {
+  const isExpanded = programPickerToggle.getAttribute('aria-expanded') === 'true';
+  setProgramPickerExpanded(!isExpanded);
+});
+window.addEventListener('resize', () => {
+  if (window.innerWidth <= 700 && programPicker.hidden) {
+    setProgramPickerExpanded(true);
+  }
+});
 exportComparisonButton.addEventListener('click', () => {
   switchMode('compare');
   renderComparisonTable();
@@ -283,8 +303,8 @@ exportComparisonButton.addEventListener('click', () => {
 });
 document.querySelector('#clearCompareButton').addEventListener('click', () => {
   selectedProgramNames.clear();
-  renderProgramChecklist();
   comparisonResults.replaceChildren();
+  renderProgramChecklist();
 });
 
 document.querySelector('#chatForm').addEventListener('submit', event => {
@@ -295,13 +315,23 @@ document.querySelector('#chatForm').addEventListener('submit', event => {
 async function sendChatMessage(question) {
   if (!question || isSending) return;
   const requestSessionId = chatSessionId;
-  chatRequestController = new AbortController();
+  const controller = new AbortController();
+  chatRequestController = controller;
   addMessage(question, 'user');
   input.value = '';
   isSending = true;
   input.disabled = true;
   document.querySelector('#chatForm button').disabled = true;
   const loading = addTypingIndicator();
+  let answerStarted = false;
+  const thinkingTimer = setTimeout(() => {
+    if (requestSessionId !== chatSessionId || answerStarted || !loading.isConnected) return;
+    const note = document.createElement('span');
+    note.className = 'typing-note';
+    note.textContent = 'I’m working through your question. Responses may take a little longer when the service is busy.';
+    loading.append(note);
+    messages.scrollTop = messages.scrollHeight;
+  }, 2000);
   try {
     const apiUrl = window.CHAT_API_URL;
     if (!apiUrl || apiUrl.includes('<your-worker>')) throw new Error('Set CHAT_API_URL in chat-config.js to your deployed chat service.');
@@ -313,14 +343,26 @@ async function sendChatMessage(question) {
         history: chatHistory.slice(-12),
         knowledge: knowledgeMarkdown
       }),
-      signal: chatRequestController.signal
+      signal: controller.signal
     });
-    const result = await response.json().catch(() => ({}));
     if (requestSessionId !== chatSessionId) return;
-    if (!response.ok) throw new Error(result.error || `Chat service returned ${response.status}.`);
-    if (!result.answer) throw new Error('The chat service returned an empty response.');
-    loading.textContent = result.answer;
-    chatHistory.push({ role: 'user', text: question }, { role: 'model', text: result.answer });
+    if (!response.ok) {
+      const result = await response.json().catch(() => ({}));
+      throw new Error(result.error || `Chat service returned ${response.status}.`);
+    }
+    const answer = await readChatAnswer(response, partialAnswer => {
+      answerStarted = true;
+      clearTimeout(thinkingTimer);
+      loading.classList.remove('typing-message');
+      renderChatAnswer(loading, partialAnswer);
+      messages.scrollTop = messages.scrollHeight;
+    });
+    if (requestSessionId !== chatSessionId) return;
+    if (!answer) throw new Error('The chat service returned an empty response.');
+    answerStarted = true;
+    loading.classList.remove('typing-message');
+    renderChatAnswer(loading, answer);
+    chatHistory.push({ role: 'user', text: question }, { role: 'model', text: answer });
     statusNote.textContent = '';
   } catch (error) {
     if (requestSessionId !== chatSessionId || error.name === 'AbortError') return;
@@ -329,6 +371,7 @@ async function sendChatMessage(question) {
       : error.message;
     statusNote.textContent = 'Chat service unavailable';
   } finally {
+    clearTimeout(thinkingTimer);
     if (requestSessionId === chatSessionId) {
       isSending = false;
       chatRequestController = null;
@@ -337,6 +380,89 @@ async function sendChatMessage(question) {
       input.focus();
     }
   }
+}
+
+function renderChatAnswer(container, text) {
+  container.replaceChildren();
+  const appendText = (parent, value) => {
+    value.split('\n').forEach((line, index) => {
+      if (index) parent.append(document.createElement('br'));
+      if (line) parent.append(document.createTextNode(line));
+    });
+  };
+
+  const boldPattern = /\*\*([^*]+)\*\*/g;
+  let lastIndex = 0;
+  for (const match of text.matchAll(boldPattern)) {
+    appendText(container, text.slice(lastIndex, match.index));
+    const bold = document.createElement('strong');
+    appendText(bold, match[1]);
+    container.append(bold);
+    lastIndex = match.index + match[0].length;
+  }
+  appendText(container, text.slice(lastIndex));
+}
+
+async function readChatAnswer(response, onPartialAnswer) {
+  const contentType = response.headers.get('content-type') || '';
+  const isEventStream = contentType.includes('text/event-stream');
+  const isLineStream = contentType.includes('application/x-ndjson') || contentType.includes('application/ndjson');
+  const isPlainStream = contentType.startsWith('text/plain');
+
+  if (!response.body?.getReader || (!isEventStream && !isLineStream && !isPlainStream)) {
+    const result = await response.json().catch(() => ({}));
+    if (result.error) throw new Error(result.error);
+    return result.answer || '';
+  }
+
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = '';
+  let answer = '';
+
+  const publish = chunk => {
+    if (typeof chunk !== 'string' || !chunk) return;
+    answer = chunk.startsWith(answer) ? chunk : answer + chunk;
+    onPartialAnswer(answer);
+  };
+  const processLine = line => {
+    const trimmed = line.trim();
+    if (!trimmed) return;
+    if (isEventStream && !trimmed.startsWith('data:')) return;
+    const data = isEventStream ? trimmed.slice(5).trim() : trimmed;
+    if (!data || data === '[DONE]') return;
+    try {
+      const payload = JSON.parse(data);
+      if (payload.error) throw new Error(payload.error);
+      const chunk = payload.choices?.[0]?.delta?.content
+        ?? payload.delta?.content
+        ?? payload.delta?.text
+        ?? payload.token
+        ?? payload.content
+        ?? payload.answer
+        ?? payload.text;
+      publish(chunk);
+    } catch (error) {
+      if (error instanceof SyntaxError) publish(data);
+      else throw error;
+    }
+  };
+
+  while (true) {
+    const { value, done } = await reader.read();
+    buffer += decoder.decode(value || new Uint8Array(), { stream: !done });
+    if (isPlainStream) {
+      publish(buffer);
+      buffer = '';
+    } else {
+      const lines = buffer.split(/\r?\n/);
+      buffer = lines.pop() || '';
+      lines.forEach(processLine);
+    }
+    if (done) break;
+  }
+  if (buffer.trim()) processLine(buffer);
+  return answer;
 }
 
 function resetChat() {
@@ -611,9 +737,12 @@ function resetQuiz() {
 function renderQuiz() {
   const back = document.querySelector('#backButton');
   const restart = document.querySelector('#restartButton');
+  const actions = document.querySelector('.quiz-actions');
   const count = document.querySelector('#quizCount');
   const progress = document.querySelector('#progressBar');
   quizContent.replaceChildren();
+  actions.querySelector('.compare-recommendations-button')?.remove();
+  quizPanel.classList.toggle('showing-recommendations', quizRecommendations.length > 0);
 
   if (quizRecommendations.length) {
     count.textContent = 'Your recommendations';
@@ -626,6 +755,8 @@ function renderQuiz() {
     label.className = 'result-label';
     label.textContent = 'Programs that could be a good fit for you';
     card.append(label);
+    const programList = document.createElement('div');
+    programList.className = 'recommended-program-list';
     quizRecommendations.forEach((recommendation, index) => {
       const program = programs.find(item => item.name === (recommendation.catalogName || recommendation.name));
       const programCard = document.createElement('article');
@@ -655,8 +786,9 @@ function renderQuiz() {
         void sendChatMessage(`Tell me more about the ${program.name} program, including its curriculum, key highlights, and career paths.`);
       });
       programCard.append(learnMore);
-      card.append(programCard);
+      programList.append(programCard);
     });
+    card.append(programList);
     const comparableRecommendations = quizRecommendations
       .map(item => ({ ...item, catalogName: item.catalogName || resolveCatalogProgramName(item.name) }))
       .filter(item => item.catalogName);
@@ -668,7 +800,7 @@ function renderQuiz() {
       compareRecommendations.addEventListener('click', () => {
         selectProgramsForComparison(comparableRecommendations.map(item => item.catalogName));
       });
-      card.append(compareRecommendations);
+      actions.append(compareRecommendations);
     }
     quizContent.append(card);
     return;
