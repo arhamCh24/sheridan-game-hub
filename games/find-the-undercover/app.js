@@ -7,7 +7,9 @@ const TOTAL_ROUNDS = 3;
 const CLUE_LIMIT = 5;
 const NPC_IMAGES = Array.from({ length: 8 }, (_, index) => `./src/assets/img_npc${index + 1}.png`);
 const app = document.getElementById('app');
+const clueScrollPositions = new Map();
 let store;
+let renderedGame = null;
 
 const state = {
   words: [],
@@ -232,6 +234,16 @@ function render() {
     return;
   }
 
+  if (renderedGame !== state.game) {
+    clueScrollPositions.clear();
+    renderedGame = state.game;
+  } else {
+    app.querySelectorAll('.npc-card').forEach(card => {
+      const clueList = card.querySelector('ul');
+      if (clueList) clueScrollPositions.set(Number(card.dataset.npcId), clueList.scrollTop);
+    });
+  }
+
   const finalResult = state.status === 'WON' || state.status === 'LOST';
   const settled = finalResult || state.status === 'SAVING' || state.status === 'ROUND_RESULT';
   const npcCards = state.game.npcs.map(npc => `
@@ -281,6 +293,11 @@ function render() {
     ` : ''}
     ${result}
     ${intro}`;
+
+  app.querySelectorAll('.npc-card').forEach(card => {
+    const clueList = card.querySelector('ul');
+    if (clueList) clueList.scrollTop = clueScrollPositions.get(Number(card.dataset.npcId)) || 0;
+  });
 }
 
 app.addEventListener('click', event => {
