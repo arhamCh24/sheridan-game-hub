@@ -320,3 +320,6 @@
     font-size: 12px;
   }
 }
+
+.board-trophy svg { display: block; }
+.board-footer-spark svg { display: inline-block; vertical-align: -3px; }

@@ -31,6 +31,12 @@ const paths = {
   list: '<path d="M9 6h12M9 12h12M9 18h12M4 6h.01M4 12h.01M4 18h.01"/>',
   lock: '<rect x="4" y="10" width="16" height="12" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>',
   info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/>',
+  lightbulb: '<path d="M9 18h6m-5 3h4m-7-9a5 5 0 1 1 10 0c0 2.8-2 3.5-2.5 6h-5C9 15.5 7 14.8 7 12Z"/>',
+  hash: '<path d="M9 3 6 21M18 3l-3 18M3 9h18M2 15h18"/>',
+  trending: '<path d="m3 17 6-6 4 4 8-8m-7 0h7v7"/>',
+  expand: '<path d="M9 3H3v6M3 3l7 7M15 21h6v-6m0 6-7-7M21 9V3h-6m6 0-7 7M3 15v6h6m-6 0 7-7"/>',
+  celebrate: '<path d="M6 18 3 21l9-2-7-7-2 9m2-9 7 7m0-14 2-3m4 8 4-1m-7-5 1-3m-2 11 3 2M19 3l2 2"/>',
+  grid: '<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',
   home: '<path d="m3 10 9-7 9 7v11H3V10Zm6 11v-8h6v8"/>',
 };
 export function icon(name, size = 20, className = "") {

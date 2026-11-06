@@ -1334,3 +1334,12 @@
     height: 180px;
   }
 }
+
+/* Inline SVGs replace colourful emoji in badges, menus, and results. */
+.hc-eyebrow svg { display: inline-block; width: 17px; height: 17px; vertical-align: -3px; margin-right: 4px; }
+.hc-mode-icon svg { display: block; color: #12836e; }
+.hc-results-icon { display: flex; justify-content: center; align-items: center; color: #087fa5; }
+.hc-btn svg { vertical-align: -3px; margin-left: 4px; }
+#expandImage svg { display: block; width: 18px; height: 18px; margin: auto; }
+
+.hc-hero-orb svg { display: block; width: min(168px, 27vw); height: auto; }

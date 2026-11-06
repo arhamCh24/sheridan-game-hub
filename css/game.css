@@ -501,3 +501,7 @@
 .question-panel {
   scroll-margin-top: 18px;
 }
+
+/* Platform-independent symbols in game screens */
+.game-side-mark svg { display: block; }
+.result-icon svg { display: block; }

@@ -1,3 +1,5 @@
+import { icon } from "../../../../../js/icons.js";
+
 export default class GameView {
   constructor() {
     // =========================================================
@@ -110,6 +112,13 @@ export default class GameView {
     // =========================================================
 
     this.roomStage = document.getElementById("roomStage");
+    this.roomZoomViewport = document.getElementById("roomZoomViewport");
+    this.roomZoomProgress = document.getElementById("roomZoomProgress");
+    this.roomZoomPrompt = document.getElementById("roomZoomPrompt");
+    this.roomZoomHint = document.getElementById("roomZoomHint");
+    this.roomZoomFeedback = document.getElementById("roomZoomFeedback");
+    this.roomZoomAudioButton = document.getElementById("roomZoomAudioButton");
+    this.roomZoomAudioButton?.addEventListener("click", () => this.audioClueButton.click());
 
     // A full-screen pannable scene helps phone users accurately tap small objects.
     this.zoomRoomButton = document.getElementById("zoomRoomButton");
@@ -510,6 +519,7 @@ export default class GameView {
     this.clueHint.textContent = step.hint || "";
 
     this.feedback.textContent = "";
+    this.syncZoomClue();
   }
 
   // =========================================================
@@ -570,22 +580,52 @@ export default class GameView {
   // RESPONSIVE ROOM SIZE
   // =========================================================
 
+  syncZoomClue() {
+    // Keep the dock synchronized with the primary clue, including stronger hints,
+    // feedback, new challenges, audio clues, and the level-complete state.
+    this.roomZoomProgress.textContent = this.clueProgress.textContent;
+    this.roomZoomPrompt.textContent = this.cluePrompt.textContent;
+    this.roomZoomHint.textContent = this.clueHint.textContent;
+    const feedback = this.feedback.textContent.trim();
+    this.roomZoomFeedback.textContent = feedback;
+    this.roomZoomFeedback.hidden = !feedback;
+    this.roomZoomAudioButton.hidden = this.audioClueButton.classList.contains("hidden");
+    if (this.roomStage.classList.contains("is-zoomed")) this.updateZoomDimensions();
+  }
+
+  updateZoomDimensions() {
+    if (!this.roomStage.classList.contains("is-zoomed")) return;
+    const ratio = this.roomWidth > 0 && this.roomHeight > 0
+      ? this.roomWidth / this.roomHeight : 1672 / 941;
+    const fillWidth = Math.max(
+      Math.ceil(window.innerWidth * 2.25),
+      Math.ceil(this.roomZoomViewport.clientHeight * ratio),
+    );
+    const width = `${fillWidth}px`;
+    if (this.roomStage.style.getPropertyValue("--quest-zoom-width") !== width) {
+      this.roomStage.style.setProperty("--quest-zoom-width", width);
+    }
+  }
+
   setRoomZoom(enabled) {
     const isZoomed = Boolean(enabled) && window.matchMedia("(max-width: 700px)").matches;
     this.roomStage.classList.toggle("is-zoomed", isZoomed);
     document.body.classList.toggle("quest-scene-zoom-open", isZoomed);
     this.zoomRoomButton?.setAttribute("aria-pressed", String(isZoomed));
+    this.roomZoomViewport?.setAttribute("tabindex", isZoomed ? "0" : "-1");
     if (this.zoomRoomButton) {
       this.zoomRoomButton.innerHTML = isZoomed
-        ? '<span aria-hidden="true">×</span> Exit zoom'
-        : '<span aria-hidden="true">⤢</span> Zoom in';
+        ? `${icon("close", 17)} Exit zoom`
+        : `${icon("expand", 17)} Zoom in`;
     }
     if (this.roomZoomHelp) {
       this.roomZoomHelp.textContent = isZoomed ? "Swipe to explore the scene" : "Find the objects in the scene";
     }
     if (isZoomed) {
-      this.roomStage.scrollLeft = 0;
-      this.roomStage.scrollTop = 0;
+      this.syncZoomClue();
+      this.updateZoomDimensions();
+      this.roomZoomViewport.scrollLeft = 0;
+      this.roomZoomViewport.scrollTop = 0;
       this.zoomRoomButton?.focus();
     }
   }
@@ -597,6 +637,7 @@ export default class GameView {
     const desktop = window.matchMedia("(min-width: 1025px)").matches;
 
     if (!desktop) {
+      this.updateZoomDimensions();
       this.roomPanel.style.width = "100%";
 
       this.roomPanel.style.height = "auto";
@@ -653,10 +694,12 @@ export default class GameView {
 
   showWrongFeedback(message) {
     this.feedback.textContent = "↻ " + message;
+    this.syncZoomClue();
   }
 
   showCorrectFeedback() {
     this.feedback.textContent = "✓ You found it!";
+    this.syncZoomClue();
   }
 
   showHelpHint(step, objectHighlighted = false) {
@@ -682,6 +725,7 @@ export default class GameView {
       this.feedback.textContent =
         "Stronger hint unlocked — one chance remaining.";
     }
+    this.syncZoomClue();
   }
 
   flashCorrect(element) {
@@ -803,7 +847,7 @@ export default class GameView {
   // =========================================================
 
   showStoryPopup(step, isLastStep) {
-    this.popupSymbol.textContent = "🔎";
+    this.popupSymbol.innerHTML = icon("search", 33);
 
     this.popupEyebrow.textContent = "CHALLENGE CLEARED";
 
@@ -853,6 +897,7 @@ export default class GameView {
     this.audioClueButton.disabled = true;
 
     this.feedback.textContent = "";
+    this.syncZoomClue();
   }
 
   // =========================================================
@@ -887,11 +932,11 @@ export default class GameView {
       savedResult = null,
     } = {},
   ) {
-    this.popupSymbol.textContent = "🎉";
+    this.popupSymbol.innerHTML = icon("celebrate", 37);
 
     this.popupEyebrow.textContent = "LEVEL COMPLETE";
 
-    this.popupTitle.textContent = completion.title || "Level Complete! 🎉";
+    this.popupTitle.textContent = completion.title || "Level Complete!";
 
     const baseMessage =
       completion.message || "Great work! You completed this level.";
@@ -965,7 +1010,7 @@ export default class GameView {
   // =========================================================
 
   showTimeUp() {
-    this.popupSymbol.textContent = "⏱️";
+    this.popupSymbol.innerHTML = icon("clock", 37);
 
     this.popupEyebrow.textContent = "TIME'S UP";
 

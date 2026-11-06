@@ -1,4 +1,5 @@
 import { initStore } from '../../js/store.js';
+import { icon } from '../../js/icons.js';
 import { initChrome, requirePlayer, setGameplayActive, toast } from '../../js/ui.js';
 import { loadWordBank } from './word-bank.js';
 
@@ -263,8 +264,8 @@ function render() {
   const scorePopup = finalResult || savingScore;
   const foundRound = state.roundOutcome === 'FOUND';
   const finalTitle = scorePopup
-    ? (state.status === 'WON' || state.pendingStatus === 'WON' ? '🎉 Congratulations!' : 'Try again')
-    : foundRound ? '🎉 You found the undercover!' : '💥 The undercover got away.';
+    ? (state.status === 'WON' || state.pendingStatus === 'WON' ? 'Congratulations!' : 'Try again')
+    : foundRound ? 'You found the undercover!' : 'The undercover got away.';
   const scoreDetails = state.scoreResult ? `
     <div class="final-result-stats">
       <div><span>YOUR SCORE</span><strong>${state.scoreResult.points}</strong></div>
@@ -279,7 +280,7 @@ function render() {
     <div class="round-result-backdrop">
       <section class="round-result-dialog" role="dialog" aria-modal="true" aria-labelledby="roundResultTitle" aria-live="assertive">
         <div class="mini-eyebrow">${scorePopup ? 'GAME RESULT' : `ROUND ${state.round} / ${TOTAL_ROUNDS} RESULT`}</div>
-        <h2 id="roundResultTitle">${finalTitle}</h2>
+        <div class="round-result-icon" aria-hidden="true">${icon(foundRound || state.status === "WON" || state.pendingStatus === "WON" ? "celebrate" : "search", 32)}</div><h2 id="roundResultTitle">${finalTitle}</h2>
         ${scorePopup ? '' : `<p class="round-result-words">Civilian: <strong>${escapeHtml(state.game.civilianWord)}</strong><br>Undercover: <strong>${escapeHtml(state.game.undercoverWord)}</strong></p>
         <div class="round-conclusion"><span>CONCLUSION</span><p>${escapeHtml(state.game.conclusion || 'No conclusion is available for this word pair.')}</p></div>`}
         ${finalReady ? '<div class="score-actions"><button class="primary-button" data-action="continue-score">Continue</button></div>' : savingScore ? '<p class="leaderboard-message">Submitting your score to the leaderboard…</p><div class="score-saving-spinner" aria-label="Saving score"></div>' : finalResult ? `<div class="final-score"><span>FINAL SCORE</span><strong>${state.score}<small>PTS</small></strong></div>${scoreDetails}` : '<div class="score-actions"><button class="primary-button" data-action="next-round">Continue</button></div>'}

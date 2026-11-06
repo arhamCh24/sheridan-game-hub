@@ -154,7 +154,7 @@ export function openJoin({ onJoined = () => {}, context = "" } = {}) {
     const safeName = escapeHtml(name);
 
     const root = overlayFrame(
-      `Hey, ${safeName}! ✳`,
+      `Hey, ${safeName}!`,
       `
       <p class="modal-intro">
         Looks like someone has joined with this nickname before.
@@ -438,7 +438,7 @@ export function openJoin({ onJoined = () => {}, context = "" } = {}) {
 
 function showCode(player, newPlayer = false, onContinue = () => {}) {
   const root = overlayFrame(
-    newPlayer ? "You’re in! ✳" : "Your player code",
+    newPlayer ? "You’re in!" : "Your player code",
     `<p class="modal-intro">${newPlayer ? `Welcome, <strong>${escapeHtml(player.displayName)}</strong>! Save these four digits so your points follow you across stations.` : "Use this code to play as you on another computer."}</p><div class="pin-card"><div class="pin-label">YOUR PLAYER CODE</div><strong class="pin-number">${escapeHtml(player.pin)}</strong><span>4 digits · No password needed</span></div><p class="modal-note">${icon("shield", 16)} <span>Keep your code to yourself. Anyone who knows it could access your event score.</span></p><button class="button button-primary full-width" id="finishJoin">${newPlayer ? "Got it, let’s play" : "Back to games"} ${icon("arrow", 17)}</button>`,
   );
   root.querySelector("#finishJoin").addEventListener("click", () => {
