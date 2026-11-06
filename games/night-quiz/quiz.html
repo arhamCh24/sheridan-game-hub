@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b315e">
+
+  <title>Sheridan Quiz Night</title>
+
+  <link rel="icon" href="../../assets/favicon.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <!-- Shared Sheridan styling -->
+  <link rel="stylesheet" href="../../css/main.css">
+  <link rel="stylesheet" href="../../css/game.css">
+
+  <style>
+    body.game-page {
+      margin: 0;
+      min-height: 100vh;
+      background: white;
+    }
+
+    /* Compact navbar */
+    .quiz-navbar .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 80px;
+      padding-top: 8px;
+      padding-bottom: 8px;
+      gap: 20px;
+    }
+
+    .quiz-navbar .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .quiz-navbar .header-link {
+      color: #123b70;
+      font-weight: 700;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    /* Information button */
+.quiz-info-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border: 1px solid #d6e5f5;
+  border-radius: 50%;
+  background: white;
+  color: #123b70;
+  font: 700 21px "DM Sans", sans-serif;
+  cursor: pointer;
+}
+
+    .quiz-info-button:hover {
+      background: #d8edfb;
+    }
+
+    .quiz-info-button:focus-visible {
+      outline: 3px solid #528ac8;
+      outline-offset: 3px;
+    }
+
+    /* Information panel */
+    .quiz-info-panel {
+      position: fixed;
+      top: 95px;
+      right: 24px;
+      width: min(340px, calc(100vw - 48px));
+      box-sizing: border-box;
+      padding: 35px 22px 22px;
+      background: white;
+      border: 1px solid #b9d2ee;
+      border-radius: 14px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+      z-index: 1000;
+      color: #123b70;
+      font-family: "DM Sans", sans-serif;
+    }
+
+    .quiz-info-panel[hidden] {
+      display: none;
+    }
+
+    .quiz-info-panel p {
+      margin: 0;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Close button */
+    .quiz-info-close {
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border: none;
+      border-radius: 50%;
+      background: transparent;
+      color: #123b70;
+      font-size: 25px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .quiz-info-close:hover {
+      color: #528ac8;
+      background: #eaf5fd;
+    }
+
+    .quiz-info-close:focus-visible {
+      outline: 2px solid #528ac8;
+      outline-offset: 3px;
+    }
+
+    /* Wayground quiz */
+    .quiz-frame {
+      display: block;
+      width: 100%;
+      height: calc(100vh - 80px);
+      min-height: 500px;
+      border: none;
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 700px) {
+      .quiz-navbar .header-inner {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .quiz-navbar .header-actions {
+        width: 100%;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .quiz-info-panel {
+        top: 95px;
+        right: 12px;
+        width: calc(100vw - 24px);
+      }
+    }
+
+    
+  </style>
+</head>
+
+<body class="game-page">
+
+  <!-- SHERIDAN NAVBAR -->
+  <header class="site-header quiz-navbar">
+    <div class="shell header-inner">
+
+      <a class="brand" href="../../index.html">
+        <img
+          class="brand-logo"
+          src="../../assets/sheridan-logo.webp"
+          alt=""
+          width="46"
+          height="46"
+        >
+
+        <span class="brand-text">
+          <strong>SHERIDAN</strong>
+          <span>
+            GAME HUB
+            <span class="brand-dot">•</span>
+            OPEN HOUSE
+          </span>
+        </span>
+      </a>
+
+      <div class="header-actions">
+
+        <a class="header-link" href="../../index.html">
+          ← All games
+        </a>
+
+        <!-- Shared player widget -->
+        <div
+          id="playerWidget"
+          class="player-widget">
+        </div>
+
+        <!-- Information button -->
+        <button
+          id="quizInfoButton"
+          class="quiz-info-button"
+          type="button"
+          aria-label="Game information"
+          aria-expanded="false"
+          aria-controls="quizInfoPanel"
+          title="Game information"
+        >
+          ⓘ
+        </button>
+
+        <!-- Information panel -->
+        <div
+          id="quizInfoPanel"
+          class="quiz-info-panel"
+          hidden
+        >
+
+          <button
+            id="closeQuizInfo"
+            class="quiz-info-close"
+            type="button"
+            aria-label="Close game information"
+          >
+            &times;
+          </button>
+
+          <p>
+            Note: This activity does not award
+            points or count toward the leaderboard.
+          </p>
+
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- WAYGROUND QUIZ -->
+  <main>
+    <iframe
+      class="quiz-frame"
+      src="https://wayground.com/join?gc=00727059"
+      title="Sheridan Quiz Night"
+      allowfullscreen>
+    </iframe>
+  </main>
+
+  <!-- Shared popup container -->
+  <div id="modalRoot"></div>
+ 
+  <!-- Shared notifications -->
+  <div
+    id="toastRoot"
+    class="toast-root"
+    role="status"
+    aria-live="polite">
+  </div>
+
+  <!-- GAME HUB INITIALIZATION -->
+  <script type="module">
+    import { initStore } from "../../js/store.js";
+    import { initChrome } from "../../js/ui.js";
+
+    // Initialize Sheridan Game Hub
+    try {
+      const store = await initStore();
+
+      // Initialize shared navbar and player widget
+      initChrome(store);
+
+      console.log(
+        "Sheridan Quiz Night initialized successfully"
+      );
+
+    } catch (error) {
+      console.error(
+        "Could not initialize Sheridan Game Hub:",
+        error
+      );
+    }
+
+    // Information button
+    const infoButton =
+      document.getElementById("quizInfoButton");
+
+    const infoPanel =
+      document.getElementById("quizInfoPanel");
+
+    const closeInfoButton =
+      document.getElementById("closeQuizInfo");
+
+    // Toggle information panel
+    infoButton.addEventListener("click", () => {
+      const isOpen = !infoPanel.hidden;
+
+      infoPanel.hidden = isOpen;
+
+      infoButton.setAttribute(
+        "aria-expanded",
+        String(!isOpen)
+      );
+    });
+
+    // Close panel using X
+    closeInfoButton.addEventListener("click", () => {
+      infoPanel.hidden = true;
+
+      infoButton.setAttribute(
+        "aria-expanded",
+        "false"
+      );
+
+      infoButton.focus();
+    });
+
+  </script>
+
+</body>
+</html>
