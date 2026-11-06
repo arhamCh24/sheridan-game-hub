@@ -19,11 +19,13 @@ export function initPhoneQr() {
     );
     if (isLocal) {
       const hint = document.getElementById("qrDialogHint");
+
       if (hint)
         hint.textContent =
-          "Local preview only — publish on GitHub Pages for phone scanning.";
+          "QR code preview only. Open the published Game Hub to scan and play on your phone.";
+
       small.title =
-        "Preview only: publish to GitHub Pages before scanning from a phone.";
+        "QR code preview. Use the published Game Hub link to play on your phone.";
     }
     openButton.addEventListener("click", () => dialog.showModal());
     closeButton.addEventListener("click", () => dialog.close());
@@ -31,7 +33,7 @@ export function initPhoneQr() {
       if (event.target === dialog) dialog.close();
     });
   } catch (error) {
-    small.textContent = "QR unavailable";
+    small.textContent = "Unable to display QR code";
     openButton.hidden = true;
     console.error("QR could not be generated:", error);
   }

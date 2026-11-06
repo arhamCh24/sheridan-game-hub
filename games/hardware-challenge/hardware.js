@@ -158,7 +158,7 @@ function wireBack(nav) {
     return (
       !round ||
       round.finished ||
-      confirm("Exit this level? This unfinished round will not be saved.")
+      confirm("Leave this level? Your progress in this round will be lost.")
     );
   }
   const goHome = () => {
@@ -178,10 +178,10 @@ function showHome() {
   round = null;
   setGameplayActive(false);
   const total = scoredLevelIds(GAME_ID).length;
-  app.innerHTML = `${header("Hardware Challenge", "Explore real computer parts and illustrated hardware missions, then test your knowledge.")}
-    <section class="hc-hero" aria-label="Choose a way to play"><div class="hc-hero-copy"><span class="hc-label">YOUR HARDWARE ADVENTURE</span><h2>Every component has a story. <em>Find it!</em></h2><p>Choose a piece of hardware or let us surprise you. Both modes earn Sheridan Points for the same levels.</p><div class="hc-hero-stats"><span>✓ Best level scores saved</span><span>✓ Maximum 100 points</span><span>✓ No time pressure</span></div></div><div class="hc-hero-orb" aria-hidden="true">${icon("cpu", 168)}</div></section>
-    <section class="hc-modes" aria-label="Game modes"><article class="hc-mode"><span class="hc-mode-icon">${icon("compass", 28)}</span><span class="hc-tag">CHOOSE YOUR LEVEL</span><h3>Explore Hardware</h3><p>Pick any hardware photo and find its components. Discover what each part does as you earn points.</p><button id="exploreBtn" class="hc-btn hc-btn-outline" type="button">Explore levels <span>→</span></button></article><article class="hc-mode hc-mode-primary"><span class="hc-mode-icon">${icon("zap", 28)}</span><span class="hc-tag">SURPRISE LEVEL</span><h3>Quick Challenge</h3><p>We'll choose a hardware level for you. Questions are randomized, and your best score still counts.</p><button id="quickBtn" class="hc-btn hc-btn-mint" type="button">Surprise me <span>→</span></button></article></section>
-    <div class="hc-tip"><strong>How the leaderboard works</strong><p>Your score is the rounded average across ${total} scored levels (up to ${Math.round(100 / total)} points per level, with small rounding differences). Unplayed levels count as zero. Your best attempt on each level stays saved, so trying again never removes points.</p></div>`;
+  app.innerHTML = `${header("Hardware Challenge", "Explore computer parts and hardware illustrations, then put your knowledge to the test.")}
+    <section class="hc-hero" aria-label="Choose a way to play"><div class="hc-hero-copy"><span class="hc-label">YOUR HARDWARE ADVENTURE</span><h2>Every component has a story. <em>Find it!</em></h2><p>Choose a hardware challenge or let us surprise you. Both modes can earn Sheridan Points when you play a point-earning level.</p><div class="hc-hero-stats"><span>✓ Best level scores saved</span><span>✓ Maximum 100 points</span><span>✓ No time pressure</span></div></div><div class="hc-hero-orb" aria-hidden="true">${icon("cpu", 168)}</div></section>
+    <section class="hc-modes" aria-label="Game modes"><article class="hc-mode"><span class="hc-mode-icon">${icon("compass", 28)}</span><span class="hc-tag">CHOOSE YOUR LEVEL</span><h3>Explore Hardware</h3><p>Choose a hardware level, find the components, and discover what each part does. Point-earning levels add to your Sheridan Points.</p><button id="exploreBtn" class="hc-btn hc-btn-outline" type="button">Explore levels <span>→</span></button></article><article class="hc-mode hc-mode-primary"><span class="hc-mode-icon">${icon("zap", 28)}</span><span class="hc-tag">SURPRISE LEVEL</span><h3>Quick Challenge</h3><p>We'll choose a hardware level for you. Questions are randomized, and your best score still counts.</p><button id="quickBtn" class="hc-btn hc-btn-mint" type="button">Surprise me <span>→</span></button></article></section>
+    <div class="hc-tip"><strong>How Sheridan Points work</strong><p>Complete hardware challenges to earn Sheridan Points. Your best score from each point-earning level counts toward your Hardware Challenge total of up to 100 points. Replay any level to improve your score—you won't lose points you've already earned.</p></div>`;
   app.querySelector("#exploreBtn").addEventListener("click", showLibrary);
   app.querySelector("#quickBtn").addEventListener("click", async () => {
     try {
@@ -190,7 +190,9 @@ function showHome() {
       const last = readLocal(savedKey("last-quick"), null);
       const level = chooseQuickLevel(candidates, scores(), last);
       if (!level)
-        throw Error("There are no scored hardware levels available yet.");
+        throw Error(
+          "No point-earning hardware levels are available right now.",
+        );
       writeLocal(savedKey("last-quick"), level.id);
       startLevel(level, "quick");
     } catch (e) {
@@ -205,17 +207,17 @@ function showLibrary() {
   round = null;
   setGameplayActive(false);
   const active = activeHardware();
-  app.innerHTML = `${header("Explore the hardware", `Choose from ${active.length} hardware missions. Levels in the current scoring roster earn Sheridan Points; additional missions are free practice.`, "home")}
-    <section class="hc-library-head"><h2>Choose a hardware level</h2><span>${active.length} hardware missions</span></section>
+  app.innerHTML = `${header("Explore the hardware", `Choose from ${active.length} hardware challenges. Some levels earn Sheridan Points, while others are for practice.`, "home")}
+    <section class="hc-library-head"><h2>Choose a hardware level</h2><span>${active.length} hardware challenges</span></section>
     <section class="hc-level-grid">${active
       .map((level) => {
         const eligible = scored().has(level.id);
         const best = scores()[level.id];
-        return `<article class="hc-level-card"><div class="hc-level-image"><img src="${escape(level.thumbnail || level.image)}" alt="${escape(level.subtitle)}" loading="lazy"/><span class="hc-level-number">LEVEL ${level.id}</span></div><div class="hc-level-body"><div class="hc-level-tags"><span>${eligible ? "SCORED LEVEL" : "DIGITAL PRACTICE"}</span><span>${typeof best === "number" ? "✓ COMPLETED" : "NOT PLAYED"}</span></div><h3>${escape(level.title)}</h3><p>${escape(level.description)}</p><div class="hc-level-foot"><div><small>BEST SCORE</small><strong>${typeof best === "number" ? `${best} / 100` : "—"}</strong></div><button data-level="${level.id}" class="hc-btn hc-btn-dark" type="button" >${!eligible ? "Practice level" : typeof best === "number" ? "Play again" : "Play level"} →</button></div></div></article>`;
+        return `<article class="hc-level-card"><div class="hc-level-image"><img src="${escape(level.thumbnail || level.image)}" alt="${escape(level.subtitle)}" loading="lazy"/><span class="hc-level-number">LEVEL ${level.id}</span></div><div class="hc-level-body"><div class="hc-level-tags"><span>${eligible ? "EARNS POINTS" : "PRACTICE ONLY"}</span><span>${typeof best === "number" ? "✓ COMPLETED" : "NOT PLAYED"}</span></div><h3>${escape(level.title)}</h3><p>${escape(level.description)}</p><div class="hc-level-foot"><div><small>BEST SCORE</small><strong>${typeof best === "number" ? `${best} / 100` : "—"}</strong></div><button data-level="${level.id}" class="hc-btn hc-btn-dark" type="button" >${!eligible ? "Practice level" : typeof best === "number" ? "Play again" : "Play level"} →</button></div></div></article>`;
       })
       .join(
         "",
-      )}</section><p class="hc-footnote">You can add more hardware later. Only levels activated in this event’s scoring configuration contribute to the leaderboard.</p>`;
+      )}</section><p class="hc-footnote">Replay point-earning levels to improve your best scores. Practice levels won't affect your Sheridan Points.</p>`;
   wireBack("home");
   app.querySelectorAll("button[data-level]").forEach((btn) =>
     btn.addEventListener("click", async () => {
@@ -230,11 +232,17 @@ function showLibrary() {
 }
 function startLevel(level, mode) {
   if (!level?.enabled || !validHotspots(level))
-    return toast("This level needs its image or hotspots checked.", "error");
+    return toast(
+      "We couldn't open this level. Please choose another level or ask an event volunteer for help.",
+      "error",
+    );
   const recent = readLocal(savedKey(`recent-${level.id}`), []);
   const questions = chooseQuestions(level, recent);
   if (!questions.length)
-    return toast("No questions are available for this hardware yet.", "error");
+    return toast(
+      "No questions are available for this level right now. Please try another level.",
+      "error",
+    );
   round = {
     playerId: store.player?.id,
     level,
@@ -284,12 +292,13 @@ function showQuestion() {
   const pct = Math.round(
     (100 * (step + (resolved ? 1 : 0))) / questions.length,
   );
-  const saveMsg = `Your ${roundScore(round.earned, 10 * questions.length)}/100 level result has NOT been saved to the leaderboard. Please check your connection and try again.${round.saveError ? ` Details: ${escape(round.saveError)}` : ""}`;
-  app.innerHTML = `${header(level.title, mode === "quick" ? "Quick Challenge · randomized hardware mission" : "Explore Hardware · learn as you play", "library")}
-    <section class="hc-play-grid"><div class="hc-visual" id="photoCard"><div class="hc-visual-top"><div><span class="hc-small-label">HARDWARE IMAGE</span><strong>${escape(level.subtitle)}</strong></div><div class="hc-zoom-tools" aria-label="Image zoom controls"><button type="button" id="zoomOut" aria-label="Zoom out" title="Zoom out">−</button><output id="zoomLabel" aria-live="off">${zoom === 1 ? "Fit" : "Zoom"} ${Math.round(zoom * 100)}%</output><button type="button" id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zoomFit" class="hc-zoom-fit" aria-label="Fit entire image" title="Fit entire image">Fit</button><button type="button" id="rotateImage" class="hc-rotate-image" aria-label="Rotate hardware photo 90 degrees" title="Rotate photo 90° clockwise">↻</button><button type="button" id="expandImage" class="hc-expand-image" aria-label="Expand photo viewer" title="Expand photo viewer">${icon("expand", 18)}</button></div></div>
+  const saveMsg =
+    "We couldn’t save your score. Check your connection and try again. Your result is still available on this screen.";
+  app.innerHTML = `${header(level.title, mode === "quick" ? "Quick Challenge · a surprise hardware level" : "Explore Hardware · learn as you play", "library")}
+    <section class="hc-play-grid"><div class="hc-visual" id="photoCard"><div class="hc-visual-top"><div><span class="hc-small-label">EXPLORE THE IMAGE</span><strong>${escape(level.subtitle)}</strong></div><div class="hc-zoom-tools" aria-label="Image zoom controls"><button type="button" id="zoomOut" aria-label="Zoom out" title="Zoom out">−</button><output id="zoomLabel" aria-live="off">${zoom === 1 ? "Fit" : "Zoom"} ${Math.round(zoom * 100)}%</output><button type="button" id="zoomIn" aria-label="Zoom in" title="Zoom in">+</button><button type="button" id="zoomFit" class="hc-zoom-fit" aria-label="Fit entire image" title="Fit entire image">Fit</button><button type="button" id="rotateImage" class="hc-rotate-image" aria-label="Rotate hardware photo 90 degrees" title="Rotate photo 90° clockwise">↻</button><button type="button" id="expandImage" class="hc-expand-image" aria-label="Expand photo viewer" title="Expand photo viewer">${icon("expand", 18)}</button></div></div>
       <div class="hc-mobile-prompt"><div class="hc-mobile-prompt-meta"><span>QUESTION ${step + 1} OF ${questions.length}</span><span class="hc-mobile-points">${roundScore(round.earned, 10 * questions.length)} / 100 POINTS</span></div><strong>${escape(q.question)}</strong></div>
       <div class="hc-photo-viewport" id="imageViewport" tabindex="0" aria-label="Interactive hardware photo. Use plus and minus to zoom, and arrow keys to pan while zoomed."><div class="hc-photo-stage" id="photoStage"><img draggable="false" src="${escape(level.image)}" width="${level.width}" height="${level.height}" alt="${escape(level.subtitle)}"/>${questionSvg(level, q, resolved)}</div></div>
-      <div class="hc-photo-tip"><span id="photoHint">Entire hardware visible · Zoom in to inspect smaller parts</span>${resolved ? `<button type="button" class="hc-photo-next" id="photoNext">${step + 1 === questions.length ? "Finish & save score" : "Next question"} →</button>` : ""}</div></div>
+      <div class="hc-photo-tip"><span id="photoHint">Full image shown · Zoom in to find smaller components</span>${resolved ? `<button type="button" class="hc-photo-next" id="photoNext">${step + 1 === questions.length ? "Finish & save score" : "Next question"} →</button>` : ""}</div></div>
     <div class="hc-play-side"><div class="hc-question-bar"><span>QUESTION ${step + 1} / ${questions.length}</span><strong>${roundScore(round.earned, 10 * questions.length)} / 100</strong></div><div class="hc-progress"><span style="width:${pct}%"></span></div><span class="hc-label">FIND THE COMPONENT</span><h2>${escape(q.question)}</h2><p>${resolved ? "You can now see the correct location outlined on the photo." : tries === 1 ? "Not quite! Take another look. You have one more try." : "Look closely at the hardware illustration or photo. Tap the matching part."}</p><div class="hc-attempts"><span class="${tries >= 1 ? "used" : ""}">●</span><span class="${tries >= 2 ? "used" : ""}">●</span><small>${resolved ? "Question finished" : `${2 - tries} ${2 - tries === 1 ? "try" : "tries"} remaining`}</small></div>
       ${resolved ? `<div class="hc-feedback ${feedback.correct ? "hc-feedback-good" : "hc-feedback-neutral"}"><strong>${feedback.correct ? "✓ Nice work!" : "The answer is highlighted."} ${feedback.earned > 0 ? `+${feedback.earned} question points` : ""}</strong><p>${escape(q.fact)}</p></div><div id="saveError" class="hc-save-warning" role="alert" ${round.saveError ? "" : "hidden"}>${saveMsg}</div><button id="nextQuestion" type="button" class="hc-btn hc-btn-mint hc-wide">${step + 1 === questions.length ? (round.saveError ? "Retry saving score" : "Finish & save score") : "Next question"} →</button>` : `<div class="hc-prompt-note">No timer. Accuracy matters more than speed.<br/>Correct first try: 10 · Second try: 5</div>`}
       <button type="button" class="hc-quit" id="quitRound">← Exit to all hardware levels</button></div></section>`;
@@ -336,8 +345,8 @@ function showQuestion() {
     if (photoHint)
       photoHint.textContent =
         zoom > 1
-          ? "Drag to pan · Fit returns to the full image · Tab + Enter selects a region"
-          : "Entire hardware visible · Zoom in to inspect smaller parts";
+          ? "Drag to explore the image · Select Fit to see the full image"
+          : "Full image shown · Zoom in to find smaller components";
   }
   function setZoom(value) {
     zoom = Math.min(3, Math.max(1, Math.round(value * 100) / 100));
@@ -464,7 +473,7 @@ function showQuestion() {
   app.querySelector("#nextQuestion")?.addEventListener("click", nextQuestion);
   app.querySelector("#photoNext")?.addEventListener("click", nextQuestion);
   app.querySelector("#quitRound").addEventListener("click", () => {
-    if (!confirm("Leave this level? Your unfinished round will not be saved."))
+    if (!confirm("Leave this level? Your progress in this round will be lost."))
       return;
     showLibrary();
   });
@@ -553,7 +562,8 @@ async function nextQuestion() {
     const notice = app.querySelector("#saveError");
     if (notice) {
       notice.hidden = false;
-      notice.textContent = `Your ${score}/100 level result has NOT been saved to the leaderboard. Please check your connection and retry. ${round.saveError}`;
+      notice.textContent =
+        "We couldn’t save your score. Check your connection and try again. Your result is still available on this screen.";
     }
     toast("Score not saved. Please try again.", "error");
     saveButtons.forEach((button) => {
@@ -569,14 +579,14 @@ function showPracticeResult(level, mode, score) {
   leaveQuestionView();
   round = null;
   app.dataset.view = "result";
-  app.innerHTML = `${header(`${level.title} complete!`, "Digital practice — your existing leaderboard score is unchanged.", "library")}
+  app.innerHTML = `${header(`${level.title} complete!`, "Practice challenge · your leaderboard score stays the same.", "library")}
     <section class="hc-results">
       <div class="hc-results-icon" aria-hidden="true">${icon("monitor", 56)}</div>
-      <span class="hc-label">DIGITAL PRACTICE • ${escape(level.title.toUpperCase())}</span>
-      <h2>Great exploring!</h2>
-      <p>You completed this optional learning mission. Practice rounds do not change your Sheridan Points or your leaderboard position.</p>
+      <span class="hc-label">PRACTICE ONLY • ${escape(level.title.toUpperCase())}</span>
+      <h2>Practice challenge complete!</h2>
+      <p>Well done! Practice levels help you learn without affecting your Sheridan Points or leaderboard ranking.</p>
       <div class="hc-result-stats"><div><span>YOUR PRACTICE SCORE</span><strong>${score}<small>/100</small></strong></div><div><span>LEADERBOARD POINTS ADDED</span><strong class="mint">+0</strong></div><div><span>HARDWARE CHALLENGE TOTAL</span><strong>${hubPoints()}<small>/100</small></strong></div></div>
-      <div class="hc-save">Practice complete — no Firebase score was submitted. <small>Additional missions can become scored in a future event by updating the central scoring-level count and publishing new Firestore rules.</small></div>
+      <div class="hc-save">Practice complete! <small>This level does not affect your Sheridan Points or leaderboard ranking.</small></div>
       <div class="hc-result-actions">
         <button class="hc-btn hc-btn-mint" id="anotherLevel" type="button">Explore another level →</button>
         <button class="hc-btn hc-btn-outline" id="replay" type="button">Replay this level</button>
@@ -600,8 +610,8 @@ function showResult(level, mode, result) {
     result.pointsAdded > 0
       ? `You just added ${result.pointsAdded} Sheridan ${result.pointsAdded === 1 ? "Point" : "Points"} to your Game Hub leaderboard score! ${left ? `Play ${left} more ${left === 1 ? "level" : "levels"} or improve your personal best to earn more.` : "You have played every level! Replay to improve your personal best."}`
       : `Your best score is safe, and no points were lost. ${left ? "Try another hardware level to build your leaderboard score." : "Replay a level to try for a higher score."}`;
-  app.innerHTML = `${header("Level complete!", "Your hardware knowledge is growing. Here is how your result affects the shared leaderboard.", "library")}
-    <section class="hc-results"><div class="hc-results-icon" aria-hidden="true">${icon("trophy", 56)}</div><span class="hc-label">${escape(level.title.toUpperCase())}</span><h2>${result.personalBest ? "New personal best!" : "Great effort!"}</h2><p>${escape(message)}</p><div class="hc-result-stats"><div><span>THIS LEVEL</span><strong>${result.levelScore}<small>/100</small></strong></div><div><span>LEADERBOARD POINTS ADDED</span><strong class="mint">+${result.pointsAdded}</strong></div><div><span>HARDWARE CHALLENGE TOTAL</span><strong>${result.gamePoints}<small>/100</small></strong></div></div><div class="hc-save ${result.savedToLeaderboard ? "hc-save-live" : ""}">${result.savedToLeaderboard ? "✓ Score saved to the live leaderboard!" : "✓ Result saved in demo mode on this browser."}<small>${finished} of ${scoredLevelIds(GAME_ID).length} scored levels completed. Your highest level score is always protected.</small></div><div class="hc-result-actions"><button class="hc-btn hc-btn-mint" id="anotherLevel" type="button">Explore another level →</button><button class="hc-btn hc-btn-outline" id="replay" type="button">Replay this level</button><button class="hc-btn hc-btn-dark" id="againQuick" type="button">Surprise me again ${icon("zap", 17)}</button><button class="hc-btn hc-btn-outline" id="returnChallenge" type="button">← Back to Hardware Challenge</button></div><a class="hc-home-link" href="../../index.html#games">← Back to Sheridan Game Hub</a></section>`;
+  app.innerHTML = `${header("Level complete!", "Great work! See the points you've earned and keep improving your score.", "library")}
+    <section class="hc-results"><div class="hc-results-icon" aria-hidden="true">${icon("trophy", 56)}</div><span class="hc-label">${escape(level.title.toUpperCase())}</span><h2>${result.personalBest ? "New personal best!" : "Great effort!"}</h2><p>${escape(message)}</p><div class="hc-result-stats"><div><span>THIS LEVEL</span><strong>${result.levelScore}<small>/100</small></strong></div><div><span>LEADERBOARD POINTS ADDED</span><strong class="mint">+${result.pointsAdded}</strong></div><div><span>HARDWARE CHALLENGE TOTAL</span><strong>${result.gamePoints}<small>/100</small></strong></div></div><div class="hc-save ${result.savedToLeaderboard ? "hc-save-live" : ""}">${result.savedToLeaderboard ? "✓ Score saved to the live leaderboard!" : "✓ Result saved in demo mode on this browser."}<small>${finished} of ${scoredLevelIds(GAME_ID).length} scored levels completed. Your best score for each level is saved.</small></div><div class="hc-result-actions"><button class="hc-btn hc-btn-mint" id="anotherLevel" type="button">Explore another level →</button><button class="hc-btn hc-btn-outline" id="replay" type="button">Replay this level</button><button class="hc-btn hc-btn-dark" id="againQuick" type="button">Surprise me again ${icon("zap", 17)}</button><button class="hc-btn hc-btn-outline" id="returnChallenge" type="button">← Back to Hardware Challenge</button></div><a class="hc-home-link" href="../../index.html#games">← Back to Sheridan Game Hub</a></section>`;
   wireBack("library");
   app.querySelector("#returnChallenge").addEventListener("click", showHome);
   app.querySelector("#anotherLevel").addEventListener("click", showLibrary);
@@ -644,7 +654,7 @@ async function main() {
       }
     });
   } catch (e) {
-    app.innerHTML = `<section class="hc-error"><h1>Could not load Hardware Challenge</h1><p>Please check the connection and try again. Your previous scores are safe.</p><a class="hc-btn hc-btn-dark" href="../../index.html">Back to Game Hub</a></section>`;
+    app.innerHTML = `<section class="hc-error"><h1>We couldn't open Hardware Challenge</h1><p>Check your connection, then try refreshing the page.</p><a class="hc-btn hc-btn-dark" href="../../index.html">Back to Game Hub</a></section>`;
     console.error(e);
   }
 }

@@ -17,7 +17,7 @@
 
 export const CONFIG = Object.freeze({
   eventId: "fall-2026-open-house",
-  eventName: "Fall Open House 2026",
+  eventName: "Davis Campus · Fall Open House 2026",
   inactivityMinutes: 10,
   maxPointsPerGame: 100,
   firebase: {

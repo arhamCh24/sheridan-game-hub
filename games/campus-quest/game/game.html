@@ -37,12 +37,27 @@
 
         <div class="mission-summary">
           <span class="mission-dot"></span>
-          <span id="missionText">Complete the challenge</span>
+          <span id="missionText">Find the hidden objects</span>
         </div>
       </header>
 
       <section class="clue-panel">
-        <div class="clue-icon" aria-hidden="true"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></div>
+        <div class="clue-icon" aria-hidden="true">
+          <svg
+            width="19"
+            height="19"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="10.7" cy="10.7" r="6.7" />
+            <path d="m16 16 5 5" />
+          </svg>
+        </div>
 
         <div class="clue-word">
           <span id="clueProgress" class="clue-progress">CHALLENGE</span>
@@ -61,7 +76,7 @@
       <section class="play-layout">
         <div id="roomStage" class="room-stage">
           <div class="room-mobile-tools">
-            <span id="roomZoomHelp">Find the objects in the scene</span>
+            <span id="roomZoomHelp">Zoom in to explore the scene</span>
             <button
               id="zoomRoomButton"
               class="room-zoom-button"
@@ -69,35 +84,75 @@
               aria-pressed="false"
               aria-controls="roomZoomViewport"
             >
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 3H3v6M3 3l7 7M15 21h6v-6m0 6-7-7M21 9V3h-6m6 0-7 7M3 15v6h6m-6 0 7-7"/></svg> Zoom in
+              <svg
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9 3H3v6M3 3l7 7M15 21h6v-6m0 6-7-7M21 9V3h-6m6 0-7 7M3 15v6h6m-6 0 7-7"
+                />
+              </svg>
+              Zoom in
             </button>
           </div>
-          <div id="roomZoomViewport" class="room-zoom-viewport" tabindex="-1" aria-label="Interactive scene, scroll to explore while zoomed">
+          <div
+            id="roomZoomViewport"
+            class="room-zoom-viewport"
+            tabindex="-1"
+            aria-label="Interactive scene, scroll to explore while zoomed"
+          >
             <div id="roomPanel" class="room-panel">
-            <svg
-              id="roomMap"
-              preserveAspectRatio="xMidYMid meet"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <image
-                id="roomBackground"
-                x="0"
-                y="0"
+              <svg
+                id="roomMap"
                 preserveAspectRatio="xMidYMid meet"
-              ></image>
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <image
+                  id="roomBackground"
+                  x="0"
+                  y="0"
+                  preserveAspectRatio="xMidYMid meet"
+                ></image>
 
-              <g id="hotspotLayer"></g>
-            </svg>
+                <g id="hotspotLayer"></g>
+              </svg>
             </div>
           </div>
-          <section id="roomZoomClue" class="room-zoom-clue" aria-label="Current challenge clue">
+          <section
+            id="roomZoomClue"
+            class="room-zoom-clue"
+            aria-label="Current challenge clue"
+          >
             <div class="room-zoom-clue-header">
-              <span id="roomZoomProgress" class="room-zoom-progress">CHALLENGE</span>
-              <span id="roomZoomPrompt" class="room-zoom-prompt">FIND THE OBJECT</span>
+              <span id="roomZoomProgress" class="room-zoom-progress"
+                >CHALLENGE</span
+              >
+              <span id="roomZoomPrompt" class="room-zoom-prompt"
+                >FIND THE OBJECT</span
+              >
             </div>
             <p id="roomZoomHint" class="room-zoom-hint"></p>
-            <button id="roomZoomAudioButton" class="room-zoom-audio" type="button" hidden>Replay audio clue</button>
-            <p id="roomZoomFeedback" class="room-zoom-feedback" role="status" hidden></p>
+            <button
+              id="roomZoomAudioButton"
+              class="room-zoom-audio"
+              type="button"
+              hidden
+            >
+              Replay audio clue
+            </button>
+            <p
+              id="roomZoomFeedback"
+              class="room-zoom-feedback"
+              role="status"
+              hidden
+            ></p>
           </section>
         </div>
 
@@ -105,7 +160,7 @@
           <div class="progress-header">
             <div>
               <span class="progress-eyebrow">QUEST PROGRESS</span>
-              <strong>Follow the challenge</strong>
+              <strong>Track your progress</strong>
             </div>
 
             <span id="progressCounter" class="progress-count">1 / 1</span>
@@ -142,7 +197,22 @@
           ></div>
 
           <div class="game-tip">
-            <span class="tip-symbol" aria-hidden="true"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6m-5 3h4m-7-9a5 5 0 1 1 10 0c0 2.8-2 3.5-2.5 6h-5C9 15.5 7 14.8 7 12Z"/></svg></span>
+            <span class="tip-symbol" aria-hidden="true"
+              ><svg
+                width="17"
+                height="17"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M9 18h6m-5 3h4m-7-9a5 5 0 1 1 10 0c0 2.8-2 3.5-2.5 6h-5C9 15.5 7 14.8 7 12Z"
+                /></svg
+            ></span>
 
             <div>
               <strong>Player tip</strong>
@@ -155,8 +225,23 @@
 
     <div id="storyPopup" class="popup hidden">
       <div class="popup-card">
-        <div id="popupSymbol" class="popup-symbol" aria-hidden="true"><svg width="33" height="33" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.7" cy="10.7" r="6.7"/><path d="m16 16 5 5"/></svg></div>
-        <span id="popupEyebrow" class="popup-eyebrow">CHALLENGE CLEARED</span>
+        <div id="popupSymbol" class="popup-symbol" aria-hidden="true">
+          <svg
+            width="33"
+            height="33"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="10.7" cy="10.7" r="6.7" />
+            <path d="m16 16 5 5" />
+          </svg>
+        </div>
+        <span id="popupEyebrow" class="popup-eyebrow">OBJECT FOUND!</span>
         <h2 id="popupTitle">Great!</h2>
         <p id="popupMessage"></p>
 
@@ -188,7 +273,7 @@
             <div class="quest-result-metric">
               <span>POINTS ADDED</span>
               <strong id="questPointsAdded">+0</strong>
-              <small>to the leaderboard</small>
+              <small>to your Sheridan Points</small>
             </div>
             <div class="quest-result-metric">
               <span>CAMPUS QUEST TOTAL</span>
@@ -198,8 +283,8 @@
           </div>
           <p id="questReplayMessage" class="quest-replay-message"></p>
           <p class="quest-scoring-note">
-            Your best level scores count toward one Campus Quest total of up to
-            100 points.
+            Your best scores from each level contribute to your Campus Quest
+            total, worth up to 100 Sheridan Points.
           </p>
         </section>
 
@@ -209,9 +294,9 @@
 
     <div id="loadError" class="load-error hidden">
       <div>
-        <h2>Level could not be loaded</h2>
-        <p>Please return to the Campus Quest home screen.</p>
-        <a href="../home.html">Campus Quest Home</a>
+        <h2>We couldn't load this level</h2>
+        <p>Something went wrong. Return to Campus Quest and try again.</p>
+        <a href="../home.html">Back to Campus Quest</a>
       </div>
     </div>
 
