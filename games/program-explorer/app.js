@@ -28,8 +28,8 @@ const FIREBASE_CONFIG = Object.freeze({
   appId: '1:503099339526:web:2b33b817ab4c3863212487'
 });
 const FIREBASE_QUESTIONS_COLLECTION = 'offline-flow-questions';
-const FIREBASE_PATHS_COLLECTION = 'offline-paths';
 const FIREBASE_QUIZ_CONFIG_COLLECTION = 'quiz-config';
+const SESSION_CACHE_PREFIX = 'program-explorer:firebase:v1:';
 const welcomeMessage = messages.querySelector('.message.bot').cloneNode(true);
 
 let programs = [];
@@ -41,6 +41,27 @@ let chatRequestController = null;
 let selectedProgramNames = new Set();
 let offlineFirestorePromise = null;
 const localFallbackDocumentPromises = Object.create(null);
+
+function readSessionCache(key, isValid) {
+  try {
+    const raw = window.sessionStorage.getItem(`${SESSION_CACHE_PREFIX}${key}`);
+    if (raw === null) return null;
+    const value = JSON.parse(raw);
+    if (isValid(value)) return value;
+    window.sessionStorage.removeItem(`${SESSION_CACHE_PREFIX}${key}`);
+  } catch (error) {
+    console.warn('Could not read the Program Explorer session cache.', error);
+  }
+  return null;
+}
+
+function writeSessionCache(key, value) {
+  try {
+    window.sessionStorage.setItem(`${SESSION_CACHE_PREFIX}${key}`, JSON.stringify(value));
+  } catch (error) {
+    console.warn('Could not write the Program Explorer session cache.', error);
+  }
+}
 
 async function loadKnowledge() {
   try {
@@ -96,6 +117,17 @@ async function getOfflineFirestore() {
 }
 
 async function loadQuizConfigFromFirestore() {
+  const cachedConfig = readSessionCache('quiz-config', value =>
+    value && typeof value === 'object' && Object.hasOwn(value, 'responseTimeoutMs')
+      && (value.responseTimeoutMs === null || (Number.isFinite(value.responseTimeoutMs) && value.responseTimeoutMs >= 0))
+  );
+  if (cachedConfig) {
+    if (Number.isFinite(cachedConfig.responseTimeoutMs)) {
+      QUIZ_RESPONSE_TIMEOUT_MS = cachedConfig.responseTimeoutMs;
+    }
+    return;
+  }
+
   try {
     const { db, firestoreSdk } = await getOfflineFirestore();
     const snapshot = await firestoreSdk.getDocs(
@@ -107,8 +139,12 @@ async function loadQuizConfigFromFirestore() {
     const remoteTimeout = snapshot.docs[0]?.data()?.responseTimeoutMs;
     if (Number.isFinite(remoteTimeout) && remoteTimeout >= 0) {
       QUIZ_RESPONSE_TIMEOUT_MS = remoteTimeout;
+      writeSessionCache('quiz-config', { responseTimeoutMs: remoteTimeout });
+    } else {
+      writeSessionCache('quiz-config', { responseTimeoutMs: null });
     }
   } catch (error) {
+    writeSessionCache('quiz-config', { responseTimeoutMs: null });
     console.warn(`Could not load ${FIREBASE_QUIZ_CONFIG_COLLECTION}; using the local timeout setting.`, error);
   }
 }
@@ -158,29 +194,24 @@ async function loadFirestoreOrLocalDocument(collectionName, fileName, documentId
 }
 
 async function loadOfflineFlow(flow) {
-  if (offlineQuizFlows[flow]?.questions?.length) return offlineQuizFlows[flow];
-  const documentId = `flow-${flow.toLowerCase()}`;
+  if (offlineQuizFlows[flow]?.questions) return offlineQuizFlows[flow];
+  const documentId = `flow_${flow.toLowerCase()}`;
+  const isValid = document => document?.questions && typeof document.questions === 'object';
+  const cacheKey = `questions:${documentId}`;
+  const cachedDocument = readSessionCache(cacheKey, isValid);
+  if (cachedDocument) {
+    offlineQuizFlows[flow] = cachedDocument;
+    return cachedDocument;
+  }
   const data = await loadFirestoreOrLocalDocument(
     FIREBASE_QUESTIONS_COLLECTION,
     'offline-flow-questions.json',
     documentId,
-    document => Array.isArray(document.questions) && document.questions.length > 0
+    isValid
   );
+  writeSessionCache(cacheKey, data);
   offlineQuizFlows[flow] = data;
   return data;
-}
-
-async function loadOfflinePathRecommendations(flow) {
-  if (offlineRecommendations[flow]) return offlineRecommendations[flow];
-  const documentId = `flow-${flow.toLowerCase()}`;
-  const data = await loadFirestoreOrLocalDocument(
-    FIREBASE_PATHS_COLLECTION,
-    'offline-paths.json',
-    documentId,
-    document => document.recommendations && typeof document.recommendations === 'object'
-  );
-  offlineRecommendations[flow] = data.recommendations;
-  return offlineRecommendations[flow];
 }
 
 function parsePrograms(markdown) {
@@ -190,7 +221,7 @@ function parsePrograms(markdown) {
       name: heading.trim(),
       credential: readProgramField(lines, 'Credential Level'),
       duration: readProgramField(lines, 'Duration'),
-      target: readProgramField(lines, 'Target Students'),
+      coop: readProgramField(lines, 'Co-op'),
       curriculum: readProgramField(lines, 'Core Curriculum & Technical Skills'),
       highlights: readProgramField(lines, 'Key Program Highlights'),
       careers: readProgramField(lines, 'Career Paths & Job Titles')
@@ -279,6 +310,7 @@ function renderComparisonTable() {
   const fields = [
     ['Credential', 'credential'],
     ['Duration', 'duration'],
+    ['Co-op', 'coop'],
     ['Curriculum', 'curriculum'],
     ['Key highlights', 'highlights'],
     ['Career paths', 'careers']
@@ -310,16 +342,7 @@ function renderComparisonTable() {
     row.append(rowHeader);
     for (const program of selected) {
       const cell = document.createElement('td');
-      const items = formatComparisonItems(program[field], field);
-      if (!items.length) items.push('Not listed in the program guide.');
-      const list = document.createElement('ul');
-      list.className = 'comparison-bullets';
-      for (const item of items) {
-        const bullet = document.createElement('li');
-        bullet.textContent = item;
-        list.append(bullet);
-      }
-      cell.append(list);
+      cell.append(createComparisonList(program, field));
       row.append(cell);
     }
     body.append(row);
@@ -347,16 +370,7 @@ function createMobileComparison(selected, fields) {
       const programName = document.createElement('h4');
       programName.textContent = program.name;
       const description = document.createElement('div');
-      const items = formatComparisonItems(program[field], field);
-      if (!items.length) items.push('Not listed in the program guide.');
-      const list = document.createElement('ul');
-      list.className = 'comparison-bullets';
-      for (const item of items) {
-        const bullet = document.createElement('li');
-        bullet.textContent = item;
-        list.append(bullet);
-      }
-      description.append(list);
+      description.append(createComparisonList(program, field));
       comparison.append(programName, description);
       comparisons.append(comparison);
     }
@@ -366,14 +380,23 @@ function createMobileComparison(selected, fields) {
   return cards;
 }
 
-function formatComparisonItems(value, field) {
-  if (!value) return [];
-  let items = value.split(/;\s*/).map(item => item.trim()).filter(Boolean);
-  if (field === 'target') {
-    items = items.slice(0, 1).map(item => item.split(/(?<=[.!?])\s+/)[0]);
+function createComparisonList(program, field) {
+  const items = formatComparisonItems(program[field]);
+  if (!items.length) items.push('Not listed in the program guide.');
+  const list = document.createElement('ul');
+  list.className = 'comparison-bullets';
+  for (const item of items) {
+    const bullet = document.createElement('li');
+    bullet.textContent = item;
+    list.append(bullet);
   }
-  const maxLength = field === 'target' ? 170 : 145;
-  return items.map(item => {
+  return list;
+}
+
+function formatComparisonItems(value) {
+  if (!value) return [];
+  const maxLength = 145;
+  return value.split(/;\s*/).map(item => item.trim()).filter(Boolean).map(item => {
     if (item.length <= maxLength) return item;
     const shortened = item.slice(0, maxLength).replace(/\s+\S*$/, '').trimEnd();
     return `${shortened}…`;
@@ -616,21 +639,11 @@ function addTypingIndicator() {
   return bubble;
 }
 
-const firstQuizQuestion = {
-  question: 'Which best describes you right now?',
-  options: [
-    'I’m in high school or just graduated.',
-    'I have work experience and want to learn more.',
-    'I’m exploring different fields.'
-  ]
-};
+const firstQuizQuestion = { question: '', options: [] };
 let offlineQuizFlows = {};
-let offlineRecommendations = {};
 let backgroundFlows = Object.create(null);
 let selectedLocalFlow = null;
 let localQuizMode = false;
-let localFlowAnswers = [];
-let localFlowQuestionIndex = -1;
 let quizRequestId = 0;
 let quizRequestController = null;
 let QUIZ_RESPONSE_TIMEOUT_MS = Number.isFinite(window.QUIZ_CONFIG?.responseTimeoutMs)
@@ -643,94 +656,30 @@ let quizRecommendations = [];
 let quizLoading = false;
 let quizError = '';
 
-function nextLocalQuizQuestion() {
+function makeLocalQuizQuestion(questionId) {
   const flowQuestions = selectedLocalFlow && offlineQuizFlows[selectedLocalFlow]?.questions;
-  if (!Array.isArray(flowQuestions)) return null;
-  const nextQuestionIndex = localFlowQuestionIndex + 1;
-  const item = flowQuestions[nextQuestionIndex];
+  const item = flowQuestions?.[questionId];
   if (!item || typeof item.question !== 'string' || !Array.isArray(item.options)) return null;
   return {
-    id: item.id,
-    offlineIndex: nextQuestionIndex,
+    id: questionId,
+    offlineId: questionId,
+    offlineFlow: selectedLocalFlow,
     question: item.question,
-    options: item.options.map(option => typeof option === 'string' ? option : option.text).filter(Boolean)
+    options: item.options.map(option => option.text).filter(Boolean)
   };
-}
-
-function getLocalPathScores() {
-  const scores = Object.fromEntries(['path1', 'path2', 'path3', 'path4', 'path5'].map(path => [path, 0]));
-  const questions = offlineQuizFlows[selectedLocalFlow]?.questions || [];
-  localFlowAnswers.forEach((answer, answerIndex) => {
-    const option = questions[answerIndex]?.options?.find(item =>
-      (typeof item === 'string' ? item : item.text) === answer
-    );
-    Object.entries(option?.path_points || {}).forEach(([path, points]) => {
-      if (Object.hasOwn(scores, path) && Number.isFinite(points)) scores[path] += points;
-    });
-  });
-  return scores;
-}
-
-function createLocalRecommendations() {
-  const scores = getLocalPathScores();
-  const pathSettings = offlineRecommendations[selectedLocalFlow] || {};
-  const eligiblePaths = Object.entries(pathSettings).map(([path, detail]) => ({
-    path,
-    detail,
-    score: scores[path] || 0,
-    programs: (detail.programs || [])
-      .map(resolveCatalogProgramName)
-      .filter(program => program && isProgramSuitableForAudience(program))
-  })).filter(item => item.programs.length > 0)
-    .sort((left, right) => right.score - left.score);
-  if (!eligiblePaths.length) return [];
-
-  const highestScore = eligiblePaths[0].score;
-  const tiedPaths = eligiblePaths.filter(item => item.score === highestScore);
-  const topPaths = highestScore > 0 && tiedPaths.length > 1 ? tiedPaths : [eligiblePaths[0]];
-  const recommendations = [];
-  const addRecommendation = (pathMatch, program) => {
-    if (recommendations.some(item => item.catalogName === program.name)) return;
-    recommendations.push({
-      name: program.name,
-      catalogName: program.name,
-      reason: `Your answers matched the ${pathMatch.detail.title} path (${pathMatch.score} point${pathMatch.score === 1 ? '' : 's'}).`
-    });
-  };
-
-  if (topPaths.length > 1) {
-    topPaths.slice(0, 3).forEach(pathMatch => addRecommendation(pathMatch, pathMatch.programs[0]));
-  } else {
-    topPaths[0].programs.slice(0, 3).forEach(program => addRecommendation(topPaths[0], program));
-  }
-
-  for (const pathMatch of eligiblePaths) {
-    if (topPaths.includes(pathMatch)) continue;
-    for (const program of pathMatch.programs) {
-      addRecommendation(pathMatch, program);
-      if (recommendations.length === 3) return recommendations;
-    }
-  }
-  return recommendations;
 }
 
 function resolveCatalogProgramName(name) {
   return programs.find(program => program.name === name) || null;
 }
 
-function isProgramSuitableForAudience(program) {
-  const target = program.target.toLowerCase();
-  const targetMatches = selectedLocalFlow === 'A'
-    ? target.includes('high school students')
-    : target.includes('graduated students') || target.includes('degree students');
-  if (!targetMatches) return false;
-
-  const isGraduateCertificate = program.credential.toLowerCase().includes('graduate certificate');
-  if (!isGraduateCertificate) return true;
-  if (selectedLocalFlow !== 'B') return false;
-
-  const background = localFlowAnswers[0]?.toLowerCase();
-  return ['college graduate', 'university graduate', 'working professional', 'career changer'].includes(background);
+function setLocalRecommendation(result) {
+  if (!result?.primary) throw new Error('The selected answer has no recommendation configured.');
+  quizRecommendations = [result.primary, result.secondary].filter(Boolean).map(name => ({
+    name,
+    catalogName: name
+  }));
+  currentQuestion = quizQuestions.length;
 }
 
 async function showLocalQuizFallback(controller, requestId) {
@@ -747,15 +696,13 @@ async function showLocalQuizFallback(controller, requestId) {
   }
   if (requestId !== quizRequestId) return true;
   localQuizMode = true;
-  localFlowAnswers = [];
-  localFlowQuestionIndex = -1;
   quizQuestions = [firstQuizQuestion];
   quizAnswers = quizAnswers.slice(0, 1);
   quizRecommendations = [];
-  const firstLocalQuestion = nextLocalQuizQuestion();
+  const firstQuestionId = selectedLocalFlow === 'A' ? 'A1' : 'B1';
+  const firstLocalQuestion = makeLocalQuizQuestion(firstQuestionId);
   if (!firstLocalQuestion) return false;
   quizQuestions.push(firstLocalQuestion);
-  localFlowQuestionIndex = firstLocalQuestion.offlineIndex;
   currentQuestion = 1;
   return true;
 }
@@ -772,17 +719,32 @@ async function requestQuizStep() {
       if (requestId !== quizRequestId) return;
       await loadOfflineFlow(selectedLocalFlow);
       if (requestId !== quizRequestId) return;
-      const nextQuestion = nextLocalQuizQuestion();
-      if (nextQuestion) {
-        quizQuestions.push(nextQuestion);
-        localFlowQuestionIndex = nextQuestion.offlineIndex;
-        currentQuestion = quizQuestions.length - 1;
+      const previousQuestion = quizQuestions[currentQuestion];
+      const previousId = previousQuestion?.offlineId;
+      const questionFlow = previousQuestion?.offlineFlow || selectedLocalFlow;
+      const previousDefinition = offlineQuizFlows[questionFlow]?.questions?.[previousId];
+      const answer = quizAnswers[currentQuestion];
+      const chosenOption = previousDefinition?.options?.find(option => option.text === answer);
+      if (!chosenOption) throw new Error('Could not match your answer to the offline quiz flow.');
+
+      let nextQuestionId = null;
+      if (chosenOption.redirect_to_flow_a) {
+        selectedLocalFlow = 'A';
+        await loadOfflineFlow('A');
+        nextQuestionId = chosenOption.redirect_to_flow_a;
+      } else if (chosenOption.next_question) {
+        selectedLocalFlow = questionFlow;
+        nextQuestionId = chosenOption.next_question;
+      } else if (chosenOption.result) {
+        setLocalRecommendation(chosenOption.result);
       } else {
-        await loadOfflinePathRecommendations(selectedLocalFlow);
-        if (requestId !== quizRequestId) return;
-        quizRecommendations = createLocalRecommendations();
-        if (!quizRecommendations.length) throw new Error('No local recommendations are configured for this answer path.');
-        currentQuestion = quizQuestions.length;
+        throw new Error('The selected answer has no next question or recommendation.');
+      }
+      if (nextQuestionId) {
+        const nextQuestion = makeLocalQuizQuestion(nextQuestionId);
+        if (!nextQuestion) throw new Error(`Offline quiz question ${nextQuestionId} is missing.`);
+        quizQuestions.push(nextQuestion);
+        currentQuestion = quizQuestions.length - 1;
       }
     } else {
       const controller = new AbortController();
@@ -869,8 +831,6 @@ function resetQuiz() {
   quizRecommendations = [];
   selectedLocalFlow = null;
   localQuizMode = false;
-  localFlowAnswers = [];
-  localFlowQuestionIndex = -1;
   quizLoading = false;
   quizError = '';
   renderQuiz();
@@ -906,18 +866,30 @@ function renderQuiz() {
       const heading = document.createElement('h3');
       heading.textContent = `${index + 1}. ${recommendation.name}`;
       programCard.append(heading);
-      const reason = document.createElement('p');
-      reason.textContent = recommendation.reason;
-      programCard.append(reason);
+      if (recommendation.reason) {
+        const reason = document.createElement('p');
+        reason.textContent = recommendation.reason;
+        programCard.append(reason);
+      }
       const details = document.createElement('p');
       const credentialLabel = document.createElement('strong');
       credentialLabel.textContent = 'Credential: ';
+      const durationLabel = document.createElement('strong');
+      durationLabel.textContent = 'Duration: ';
+      const coopLabel = document.createElement('strong');
+      coopLabel.textContent = 'Co-op: ';
+      const highlightsLabel = document.createElement('strong');
+      highlightsLabel.textContent = 'Key Program Highlights: ';
       const careersLabel = document.createElement('strong');
       careersLabel.textContent = 'Career paths: ';
-      if (program) {
-        details.append(credentialLabel, document.createTextNode(program.credential), document.createElement('br'), careersLabel, document.createTextNode(program.careers));
-        programCard.append(details);
-      }
+      details.append(
+        credentialLabel, document.createTextNode(program?.credential || 'Not specified'),
+        document.createTextNode(' · '), durationLabel, document.createTextNode(program?.duration || 'Not specified'),
+        document.createTextNode(' · '), coopLabel, document.createTextNode(program?.coop || 'Not specified'),
+        document.createElement('br'), highlightsLabel, document.createTextNode(program?.highlights || 'Not specified'),
+        document.createElement('br'), careersLabel, document.createTextNode(program?.careers || 'Not specified')
+      );
+      programCard.append(details);
       const learnMore = document.createElement('button');
       learnMore.className = 'text-button learn-more-button';
       learnMore.type = 'button';
@@ -950,8 +922,8 @@ function renderQuiz() {
 
   const question = quizQuestions[currentQuestion];
   count.textContent = `Question ${currentQuestion + 1}`;
-  const flowLength = offlineQuizFlows[selectedLocalFlow]?.questions?.length
-    ?? Math.max(0, ...Object.values(offlineQuizFlows).map(flow => flow.questions?.length || 0));
+  const flowLength = Object.keys(offlineQuizFlows[selectedLocalFlow]?.questions || {}).length
+    || Math.max(0, ...Object.values(offlineQuizFlows).map(flow => Object.keys(flow.questions || {}).length));
   const totalQuestions = flowLength + 1;
   progress.style.width = `${Math.min(95, ((currentQuestion + 1) / totalQuestions) * 100)}%`;
   progress.classList.toggle('is-loading', quizLoading);
@@ -1014,11 +986,6 @@ function renderQuiz() {
       quizAnswers[currentQuestion] = option;
       if (currentQuestion === 0) {
         selectedLocalFlow = backgroundFlows[option] || null;
-        localFlowAnswers = [];
-        localFlowQuestionIndex = -1;
-      }
-      if (localQuizMode && Number.isInteger(quizQuestions[currentQuestion].offlineIndex)) {
-        localFlowAnswers[quizQuestions[currentQuestion].offlineIndex] = option;
       }
       quizQuestions = quizQuestions.slice(0, currentQuestion + 1);
       quizAnswers = quizAnswers.slice(0, currentQuestion + 1);
@@ -1036,11 +1003,8 @@ document.querySelector('#backButton').addEventListener('click', () => {
     const previousQuestion = quizQuestions[currentQuestion];
     if (currentQuestion === 0) {
       selectedLocalFlow = null;
-      localFlowAnswers = [];
-      localFlowQuestionIndex = -1;
-    } else if (localQuizMode && Number.isInteger(previousQuestion?.offlineIndex)) {
-      localFlowAnswers = localFlowAnswers.slice(0, previousQuestion.offlineIndex);
-      localFlowQuestionIndex = previousQuestion.offlineIndex;
+    } else if (localQuizMode && previousQuestion?.offlineId) {
+      selectedLocalFlow = previousQuestion.offlineFlow || selectedLocalFlow;
     }
     quizQuestions = quizQuestions.slice(0, currentQuestion + 1);
     quizAnswers = quizAnswers.slice(0, currentQuestion);

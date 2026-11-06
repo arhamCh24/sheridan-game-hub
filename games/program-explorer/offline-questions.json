@@ -3,16 +3,16 @@
   "questions": [
     {
       "id": "Q1",
-      "question": "Which best describes you?",
+      "question": "Which option best describes your current educational or career background?",
       "options": [
         {
           "label": "A",
-          "text": "I am currently in high school or recently graduated from high school",
+          "text": "I’m in high school or recently graduated from high school",
           "flow": "A"
         },
         {
           "label": "B",
-          "text": "I already have college, university, work experience, or I am changing careers",
+          "text": "I have college, university, or work experience, or I’m considering a career change",
           "flow": "B"
         }
       ]

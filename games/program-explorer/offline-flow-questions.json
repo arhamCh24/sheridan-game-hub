@@ -1,745 +1,470 @@
 [
   {
-    "id": "flow-a",
-    "title": "High School Students",
-    "questions": [
-      {
-        "id": "Q2A",
-        "question": "Which subjects do you enjoy the most?",
+    "id": "flow_a",
+    "questions": {
+      "A1": {
+        "question": "What type of program are you looking for?",
         "options": [
           {
             "label": "A",
-            "text": "Advanced Mathematics",
-            "path_points": {
-              "path1": 1
-            }
+            "text": "A degree program (4 years)",
+            "next_question": "A2A"
           },
           {
             "label": "B",
-            "text": "Computer Science",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
+            "text": "A diploma or advanced diploma (2–3 years)",
+            "next_question": "A2B"
           },
           {
             "label": "C",
-            "text": "Physics",
-            "path_points": {
-              "path1": 1,
-              "path4": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "Business",
-            "path_points": {
-              "path5": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "Arts/Design",
-            "path_points": {
-              "path3": 1
-            }
-          },
-          {
-            "label": "F",
-            "text": "Not sure",
-            "path_points": {}
+            "text": "I’m open to either",
+            "next_question": "A2C"
           }
         ]
       },
-      {
-        "id": "Q3A",
-        "question": "How comfortable are you with mathematics?",
+      "A2A": {
+        "question": "How interested are you in programming?",
         "options": [
           {
             "label": "A",
-            "text": "I love advanced math",
-            "path_points": {
-              "path1": 1
+            "text": "I enjoy programming",
+            "result": {
+              "primary": "Bachelor of Computer Science (Degree)",
+              "secondary": "Bachelor of Information Sciences – Cyber Security (Degree)"
             }
           },
           {
             "label": "B",
-            "text": "I am comfortable with math",
-            "path_points": {
-              "path1": 1,
-              "path5": 1
+            "text": "I’m open to some programming",
+            "result": {
+              "primary": "Bachelor of Information Sciences – Cyber Security (Degree)",
+              "secondary": null
             }
           },
           {
             "label": "C",
-            "text": "Math is okay",
-            "path_points": {
-              "path5": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "I prefer not to do a lot of math",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
+            "text": "I’d prefer a program with less programming",
+            "result": {
+              "primary": "Bachelor of Computer Science (Degree)",
+              "secondary": "Bachelor of Information Sciences – Cyber Security (Degree)"
             }
           }
         ]
       },
-      {
-        "id": "Q4A",
-        "question": "What sounds most exciting to you?",
+      "A2B": {
+        "question": "How important is a co-op opportunity to you?",
         "options": [
           {
             "label": "A",
-            "text": "Building software applications",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
+            "text": "I’m looking for a program with co-op",
+            "next_question": "A3A"
+          },
+          {
+            "label": "B",
+            "text": "I don't want to do Co-op",
+            "next_question": "A3B"
+          },
+          {
+            "label": "C",
+            "text": "I’m open to either",
+            "next_question": "A3B"
+          }
+        ]
+      },
+      "A3A": {
+        "question": "How interested are you in programming?",
+        "options": [
+          {
+            "label": "A",
+            "text": "I enjoy programming",
+            "result": {
+              "primary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)",
+              "secondary": "Network Engineering Technology (Advanced Diploma)"
             }
           },
           {
             "label": "B",
-            "text": "Protecting organizations from cyber attacks",
-            "path_points": {
-              "path2": 1
+            "text": "I’m open to some programming",
+            "result": {
+              "primary": "Network Engineering Technology (Advanced Diploma)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
             }
           },
           {
             "label": "C",
-            "text": "Designing mobile apps",
-            "path_points": {
-              "path3": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "Working with cloud technologies",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "Analyzing data and finding patterns",
-            "path_points": {
-              "path5": 1
-            }
-          },
-          {
-            "label": "F",
-            "text": "Managing computer networks",
-            "path_points": {
-              "path4": 1
+            "text": "I’d prefer a program with less programming",
+            "result": {
+              "primary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)",
+              "secondary": "Network Engineering Technology (Advanced Diploma)"
             }
           }
         ]
       },
-      {
-        "id": "Q5A",
-        "question": "What type of career appeals to you?",
+      "A3B": {
+        "question": "How interested are you in programming?",
         "options": [
           {
             "label": "A",
-            "text": "Software Developer",
-            "path_points": {
-              "path1": 1
+            "text": "I enjoy programming",
+            "result": {
+              "primary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)",
+              "secondary": "Computer Programming (Diploma)"
             }
           },
           {
             "label": "B",
-            "text": "Cybersecurity Specialist",
-            "path_points": {
-              "path2": 1
-            }
+            "text": "I’m open to some programming",
+            "next_question": "A4"
           },
           {
             "label": "C",
-            "text": "Data Analyst",
-            "path_points": {
-              "path5": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "Cloud Engineer",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "Network Administrator",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "F",
-            "text": "Technology Consultant",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
+            "text": "I’d prefer a program with less programming",
+            "result": {
+              "primary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)",
+              "secondary": "Computer Systems Technician – Cyber Security (Diploma)"
             }
           }
         ]
       },
-      {
-        "id": "Q6A",
-        "question": "How important is a university degree versus a diploma?",
+      "A4": {
+        "question": "Which area interests you more?",
         "options": [
           {
             "label": "A",
-            "text": "I definitely want a bachelor's degree",
-            "path_points": {
-              "path1": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Either is fine",
-            "path_points": {
-              "path1": 1,
-              "path3": 1,
-              "path4": 1,
-              "path5": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "I want the fastest route into employment",
-            "path_points": {
-              "path3": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q7A",
-        "question": "Which work style do you prefer?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Solving difficult theoretical problems",
-            "path_points": {
-              "path1": 1,
-              "path2": 1,
-              "path5": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Building hands-on projects",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "A mix of both",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q8A",
-        "question": "Are you interested in learning programming?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Very interested",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Somewhat interested",
-            "path_points": {
-              "path3": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Not sure",
-            "path_points": {}
-          }
-        ]
-      },
-      {
-        "id": "Q9A",
-        "question": "How much hands-on technical work do you enjoy?",
-        "options": [
-          {
-            "label": "A",
-            "text": "A lot",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Some",
-            "path_points": {
-              "path3": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Very little",
-            "path_points": {
-              "path1": 1,
-              "path5": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q10A",
-        "question": "What is your long-term goal?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Work at a major tech company",
-            "path_points": {
-              "path1": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Become a cybersecurity expert",
-            "path_points": {
-              "path2": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Build my own app/business",
-            "path_points": {
-              "path3": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "Work in cloud infrastructure",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "Enter the workforce quickly",
-            "path_points": {
-              "path3": 1
-            }
-          },
-          {
-            "label": "F",
-            "text": "Still exploring",
-            "path_points": {}
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "id": "flow-b",
-    "title": "College Graduates, University Graduates, Career Changers",
-    "questions": [
-      {
-        "id": "Q2B",
-        "question": "What best describes you?",
-        "options": [
-          {
-            "label": "A",
-            "text": "College graduate",
-            "path_points": {}
-          },
-          {
-            "label": "B",
-            "text": "University graduate",
-            "path_points": {}
-          },
-          {
-            "label": "C",
-            "text": "Working professional",
-            "path_points": {}
-          },
-          {
-            "label": "D",
-            "text": "Career changer",
-            "path_points": {}
-          }
-        ]
-      },
-      {
-        "id": "Q3B",
-        "question": "Do you already have education in technology?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Yes, IT-related",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Some technology background",
-            "path_points": {
-              "path1": 1,
-              "path3": 1,
-              "path4": 1,
-              "path5": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "No",
-            "path_points": {
-              "path1": 1,
-              "path2": 1,
-              "path3": 1,
-              "path4": 1,
-              "path5": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q4B",
-        "question": "What is your primary goal?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Higher salary",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Enter technology industry",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Specialize in cybersecurity",
-            "path_points": {
-              "path2": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "Learn cloud computing",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "Become a developer",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q5B",
-        "question": "How much programming experience do you have?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Significant",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Some",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Little",
-            "path_points": {
-              "path1": 1,
-              "path3": 1,
-              "path5": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "None",
-            "path_points": {
-              "path1": 1,
-              "path3": 1,
-              "path5": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q6B",
-        "question": "Which field interests you the most?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Software Development",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
+            "text": "Networking and IT infrastructure",
+            "result": {
+              "primary": "Network Engineering Technology (Advanced Diploma)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
             }
           },
           {
             "label": "B",
             "text": "Cybersecurity",
-            "path_points": {
-              "path2": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Cloud Computing",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "Networking",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "Data Analytics",
-            "path_points": {
-              "path5": 1
-            }
-          },
-          {
-            "label": "F",
-            "text": "Artificial Intelligence",
-            "path_points": {
-              "path1": 1,
-              "path5": 1
+            "result": {
+              "primary": "Computer Systems Technician – Cyber Security (Diploma)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
             }
           }
         ]
       },
-      {
-        "id": "Q7B",
-        "question": "How soon do you want to enter the workforce?",
+      "A2C": {
+        "question": "How important is a co-op opportunity to you?",
         "options": [
           {
             "label": "A",
-            "text": "Immediately",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
+            "text": "I’m looking for a program with co-op",
+            "next_question": "A5"
+          },
+          {
+            "label": "B",
+            "text": "I don't want to do Co-op",
+            "next_question": "A3B"
+          },
+          {
+            "label": "C",
+            "text": "I’m open to either",
+            "next_question": "A6"
+          }
+        ]
+      },
+      "A5": {
+        "question": "How interested are you in programming?",
+        "options": [
+          {
+            "label": "A",
+            "text": "I enjoy programming",
+            "result": {
+              "primary": "Bachelor of Computer Science (Degree)",
+              "secondary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)"
             }
           },
           {
             "label": "B",
-            "text": "Within a year",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
+            "text": "I’m open to some programming",
+            "result": {
+              "primary": "Bachelor of Information Sciences – Cyber Security (Degree)",
+              "secondary": "Network Engineering Technology (Advanced Diploma)"
             }
           },
           {
             "label": "C",
-            "text": "Longer-term education is okay",
-            "path_points": {
-              "path1": 1,
-              "path2": 1,
-              "path5": 1
+            "text": "I’d prefer a program with less programming",
+            "result": {
+              "primary": "Bachelor of Information Sciences – Cyber Security (Degree)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
             }
           }
         ]
       },
-      {
-        "id": "Q8B",
-        "question": "Which learning style do you prefer?",
+      "A6": {
+        "question": "How interested are you in programming?",
         "options": [
           {
             "label": "A",
-            "text": "Intensive practical learning",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
+            "text": "I enjoy programming",
+            "result": {
+              "primary": "Bachelor of Computer Science (Degree)",
+              "secondary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)"
             }
           },
           {
             "label": "B",
-            "text": "Academic and theoretical learning",
-            "path_points": {
-              "path1": 1,
-              "path2": 1,
-              "path5": 1
+            "text": "I’m open to some programming",
+            "result": {
+              "primary": "Bachelor of Information Sciences – Cyber Security (Degree)",
+              "secondary": "Network Engineering Technology (Advanced Diploma)"
             }
           },
           {
             "label": "C",
-            "text": "Combination of both",
-            "path_points": {
-              "path1": 1,
-              "path3": 1,
-              "path4": 1
-            }
+            "text": "I’d prefer a program with less programming",
+            "next_question": "A6C"
           }
         ]
       },
-      {
-        "id": "Q9B",
-        "question": "Are you interested in industry certifications?",
+      "A6C": {
+        "question": "Which area interests you more?",
         "options": [
           {
             "label": "A",
-            "text": "Very interested",
-            "path_points": {
-              "path2": 1
+            "text": "Networking and IT infrastructure",
+            "result": {
+              "primary": "Network Engineering Technology (Advanced Diploma)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
             }
           },
           {
             "label": "B",
-            "text": "Somewhat interested",
-            "path_points": {
-              "path2": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Not interested",
-            "path_points": {
-              "path1": 1,
-              "path3": 1,
-              "path4": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q10B",
-        "question": "Which technologies excite you the most?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Python and AI",
-            "path_points": {
-              "path5": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Ethical Hacking",
-            "path_points": {
-              "path2": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "AWS/Azure",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "Mobile Apps",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "DevOps",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
-            }
-          },
-          {
-            "label": "F",
-            "text": "Software Engineering",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          }
-        ]
-      },
-      {
-        "id": "Q11B",
-        "question": "What is your ideal role after graduation?",
-        "options": [
-          {
-            "label": "A",
-            "text": "Software Developer",
-            "path_points": {
-              "path1": 1,
-              "path3": 1
-            }
-          },
-          {
-            "label": "B",
-            "text": "Cloud Engineer",
-            "path_points": {
-              "path4": 1
-            }
-          },
-          {
-            "label": "C",
-            "text": "Cybersecurity Analyst",
-            "path_points": {
-              "path2": 1
-            }
-          },
-          {
-            "label": "D",
-            "text": "DevOps Engineer",
-            "path_points": {
-              "path3": 1,
-              "path4": 1
-            }
-          },
-          {
-            "label": "E",
-            "text": "Data Analyst",
-            "path_points": {
-              "path5": 1
-            }
-          },
-          {
-            "label": "F",
-            "text": "Systems Administrator",
-            "path_points": {
-              "path4": 1
+            "text": "Cybersecurity",
+            "result": {
+              "primary": "Bachelor of Information Sciences – Cyber Security (Degree)",
+              "secondary": "Computer Systems Technician – Cyber Security (Diploma)"
             }
           }
         ]
       }
-    ]
+    }
+  },
+  {
+    "id": "flow_b",
+    "questions": {
+      "B1": {
+        "question": "How much time are you looking to spend in a program?",
+        "options": [
+          {
+            "label": "A",
+            "text": "About 1–2 years (graduate certificate)",
+            "next_question": "B2A"
+          },
+          {
+            "label": "B",
+            "text": "About 2–3 years (diploma or advanced diploma)",
+            "redirect_to_flow_a": "A2B"
+          },
+          {
+            "label": "C",
+            "text": "About 4 years (degree)",
+            "redirect_to_flow_a": "A2A"
+          },
+          {
+            "label": "D",
+            "text": "I’m open to different program lengths",
+            "next_question": "B2D"
+          }
+        ]
+      },
+      "B2A": {
+        "question": "Which subject area interests you most?",
+        "options": [
+          {
+            "label": "A",
+            "text": "Programming and software development",
+            "result": {
+              "primary": "Game Development – Advanced Programming (Graduate Certificate)",
+              "secondary": "Interactive Media Management – Digital Design (Graduate Certificate)"
+            }
+          },
+          {
+            "label": "B",
+            "text": "Cloud computing and networking",
+            "result": {
+              "primary": "Cloud Security (Graduate Certificate)",
+              "secondary": "Operational Technology Cybersecurity (Graduate Certificate)"
+            }
+          },
+          {
+            "label": "C",
+            "text": "Artificial intelligence and data",
+            "result": {
+              "primary": "Artificial Intelligence Development and Applications (Graduate Certificate)",
+              "secondary": "Project Management – Information Technology (Graduate Certificate)"
+            }
+          },
+          {
+            "label": "D",
+            "text": "Project and technology management",
+            "result": {
+              "primary": "Project Management – Information Technology (Graduate Certificate)",
+              "secondary": null
+            }
+          }
+        ]
+      },
+      "B2D": {
+        "question": "How important is a co-op opportunity to you?",
+        "options": [
+          {
+            "label": "A",
+            "text": "I’m looking for a program with co-op",
+            "next_question": "B3"
+          },
+          {
+            "label": "B",
+            "text": "I don't want to do Co-op.",
+            "next_question": "B4"
+          },
+          {
+            "label": "C",
+            "text": "I’m open to either",
+            "next_question": "B5"
+          }
+        ]
+      },
+      "B3": {
+        "question": "Which subject area interests you most?",
+        "options": [
+          {
+            "label": "A",
+            "text": "Programming and software development",
+            "result": {
+              "primary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)",
+              "secondary": "Bachelor of Computer Science (Degree)"
+            }
+          },
+          {
+            "label": "B",
+            "text": "Artificial intelligence and data",
+            "result": {
+              "primary": "Artificial Intelligence Development and Applications (Graduate Certificate)",
+              "secondary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)"
+            }
+          },
+          {
+            "label": "C",
+            "text": "Cloud computing and networking",
+            "result": {
+              "primary": "Network Engineering Technology (Advanced Diploma)",
+              "secondary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)"
+            }
+          },
+          {
+            "label": "D",
+            "text": "Cybersecurity",
+            "result": {
+              "primary": "Operational Technology Cybersecurity (Graduate Certificate)",
+              "secondary": "Bachelor of Information Sciences – Cyber Security (Degree)"
+            }
+          },
+          {
+            "label": "E",
+            "text": "Project and technology management",
+            "result": {
+              "primary": "Project Management – Information Technology (Graduate Certificate)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
+            }
+          }
+        ]
+      },
+      "B4": {
+        "question": "Which subject area interests you most?",
+        "options": [
+          {
+            "label": "A",
+            "text": "Programming and software development",
+            "result": {
+              "primary": "Game Development – Advanced Programming (Graduate Certificate)",
+              "secondary": "Computer Programming (Diploma)"
+            }
+          },
+          {
+            "label": "B",
+            "text": "Artificial intelligence and data",
+            "result": {
+              "primary": "Artificial Intelligence Development and Applications (Graduate Certificate)",
+              "secondary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)"
+            }
+          },
+          {
+            "label": "C",
+            "text": "Cloud computing and networking",
+            "result": {
+              "primary": "Cloud Security (Graduate Certificate)",
+              "secondary": "Network Engineering Technology (Advanced Diploma)"
+            }
+          },
+          {
+            "label": "D",
+            "text": "Cybersecurity",
+            "result": {
+              "primary": "Operational Technology Cybersecurity (Graduate Certificate)",
+              "secondary": "Computer Systems Technician – Cyber Security (Diploma)"
+            }
+          },
+          {
+            "label": "E",
+            "text": "Project and technology management",
+            "result": {
+              "primary": "Project Management – Information Technology (Graduate Certificate)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
+            }
+          }
+        ]
+      },
+      "B5": {
+        "question": "Which subject area interests you most?",
+        "options": [
+          {
+            "label": "A",
+            "text": "Programming and software development",
+            "result": {
+              "primary": "Computer Programming (Diploma)",
+              "secondary": "Game Development – Advanced Programming (Graduate Certificate)"
+            }
+          },
+          {
+            "label": "B",
+            "text": "Artificial intelligence and data",
+            "result": {
+              "primary": "Artificial Intelligence Development and Applications (Graduate Certificate)",
+              "secondary": "Computer Systems Technology – Software Development and Network Engineering (Advanced Diploma)"
+            }
+          },
+          {
+            "label": "C",
+            "text": "Cloud computing and networking",
+            "result": {
+              "primary": "Cloud Security (Graduate Certificate)",
+              "secondary": "Network Engineering Technology (Advanced Diploma)"
+            }
+          },
+          {
+            "label": "D",
+            "text": "Cybersecurity",
+            "result": {
+              "primary": "Operational Technology Cybersecurity (Graduate Certificate)",
+              "secondary": "Computer Systems Technician – Cyber Security (Diploma)"
+            }
+          },
+          {
+            "label": "E",
+            "text": "Project and technology management",
+            "result": {
+              "primary": "Project Management – Information Technology (Graduate Certificate)",
+              "secondary": "Computer Systems Technician – Information Technology Infrastructure Services (Diploma)"
+            }
+          }
+        ]
+      }
+    }
   }
 ]

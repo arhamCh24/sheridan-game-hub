@@ -510,13 +510,20 @@
 .program-explorer .comparison-table thead th {
   position: sticky;
   top: 0;
+  z-index: 2;
   background: #edf5fb;
   color: var(--navy);
+}
+
+.program-explorer .comparison-table thead th:first-child {
+  left: 0;
+  z-index: 3;
 }
 
 .program-explorer .comparison-table tbody th {
   position: sticky;
   left: 0;
+  z-index: 1;
   background: #f7fafd;
 }
 
