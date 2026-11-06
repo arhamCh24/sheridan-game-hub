@@ -36,139 +36,279 @@ const level4 = {
       "You found the creative production tools. Replay to try a different set of six clues.",
   },
   steps: [
+    /* =====================================================
+     PEN DISPLAY
+  ===================================================== */
     {
       id: "pen-display",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the large angled screen designed for drawing directly onto its surface.",
+
+      hint: "An artist can draw directly onto this digital surface, turning movements of a stylus into artwork without using traditional paper.",
+
       helpHint:
-        "Look at the largest tilted display at the left of the front desk.",
+        "Inspect the front-left workstation for the large tilted screen designed for drawing with a digital pen.",
+
       foundLabel: "Digital Drawing Display",
-      title: "Digital Drawing Display found!",
+
+      title: "Digital drawing display found!",
+
       story:
-        "Correct! Digital pen displays allow artists to draw directly into design applications.",
+        "Correct. Interactive pen displays allow designers and illustrators to create digital artwork using precise, natural drawing movements.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     CAMERA
+  ===================================================== */
     {
       id: "camera",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the black DSLR-style camera with a large circular lens on the front desk.",
+
+      hint: "Instead of describing a moment or drawing it from memory, a creator can capture what appears through a lens for later use.",
+
       helpHint:
-        "Look at the bottom-left of the creative workbench, near the front edge.",
+        "Look near the bottom-left edge of the main creative workbench for a black photographic device with a large circular lens.",
+
       foundLabel: "Digital Camera",
-      title: "Digital Camera found!",
+
+      title: "Digital camera found!",
+
       story:
-        "Correct! A camera can capture photographs, video reference and stop-motion material.",
+        "Correct. Digital cameras help creative professionals capture photographs, record visual references, and produce media for different projects.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     HEADPHONES
+  ===================================================== */
     {
       id: "headphones",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the black over-ear headphones lying near the sketchbook.",
-      helpHint: "Look toward the middle of the main workbench.",
+
+      hint: "When editing sound, hearing every detail matters. This personal accessory lets someone listen closely without filling the entire room with noise.",
+
+      helpHint:
+        "Search the middle of the main creative workbench for a black over-ear audio accessory lying near the sketchbook.",
+
       foundLabel: "Studio Headphones",
-      title: "Studio Headphones found!",
+
+      title: "Studio headphones found!",
+
       story:
-        "Correct! Headphones help editors and designers listen closely to audio.",
+        "Correct. Headphones help audio and video editors listen carefully to dialogue, music, and sound effects during production.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     STORYBOARD
+  ===================================================== */
     {
       id: "storyboard",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the large collection of panels showing a visual sequence of scenes.",
+
+      hint: "Before filming begins, a creative team can plan what viewers will see by arranging a sequence of illustrated scenes.",
+
       helpHint:
-        "Look at the loose printed pages across the front-centre of the desk.",
+        "Inspect the loose printed sheets spread across the front-centre section of the main workbench for a collection of illustrated panels.",
+
       foundLabel: "Storyboard Sheets",
-      title: "Storyboard Sheets found!",
+
+      title: "Storyboard sheets found!",
+
       story:
-        "Correct! Storyboards help teams plan a sequence of shots or animation events.",
+        "Correct. Storyboards help filmmakers, animators, and designers organize visual sequences before production begins.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     SKETCHBOOK
+  ===================================================== */
     {
       id: "sketchbook",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the open spiral-bound book showing drawings of characters and poses.",
-      helpHint: "Look to the right of the headphones on the desk.",
+
+      hint: "Before a character becomes a finished animation, its expressions, movements, and appearance may begin as rough drawings on these pages.",
+
+      helpHint:
+        "Look to the right of the headphones on the main workbench for an open spiral-bound book containing character drawings.",
+
       foundLabel: "Open Sketchbook",
-      title: "Open Sketchbook found!",
+
+      title: "Sketchbook found!",
+
       story:
-        "Correct! Sketchbooks help artists explore ideas before final production.",
+        "Correct. Sketchbooks give artists a place to experiment with characters, compositions, and visual concepts before developing finished designs.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     SOFTBOX
+  ===================================================== */
     {
       id: "softbox",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the large black fabric light modifier hanging above the workstations.",
-      helpHint: "Look high above the desks, toward the centre-right.",
+
+      hint: "Bright studio lighting can create harsh shadows. This large fabric-covered accessory helps spread the light more gently across a subject.",
+
+      helpHint:
+        "Look above the creative workstations toward the centre-right of the studio for a large black light modifier.",
+
       foundLabel: "Softbox Studio Light",
-      title: "Softbox Studio Light found!",
+
+      title: "Softbox studio light found!",
+
       story:
-        "Correct! Softboxes spread light to create a softer illumination for photography.",
+        "Correct. Softboxes diffuse light to create softer illumination and more controlled shadows in photography and video production.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     TRIPOD CAMERA
+  ===================================================== */
     {
       id: "tripod-camera",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the video camera mounted high on three supporting legs.",
+
+      hint: "Recording a steady shot becomes easier when the equipment stays supported in one position instead of being held by hand.",
+
       helpHint:
-        "Look toward the right side of the studio, behind the main desk.",
+        "Inspect the right side of the studio behind the main workbench for a video camera mounted on a three-legged stand.",
+
       foundLabel: "Camera on Tripod",
-      title: "Camera on Tripod found!",
-      story: "Correct! A tripod helps keep a camera stable during recording.",
+
+      title: "Camera on tripod found!",
+
+      story:
+        "Correct. Tripods help stabilize cameras, maintain consistent framing, and reduce unwanted movement during recording.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     MODELING MONITOR
+  ===================================================== */
     {
       id: "modeling-monitor",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the screen displaying a digital three-dimensional chair model.",
-      helpHint: "Look at the centre-back monitor under the studio light.",
+
+      hint: "A designer can rotate, reshape, and examine a virtual object here long before anyone builds a physical version of it.",
+
+      helpHint:
+        "Look at the centre-back computer screen beneath the studio light for a digital three-dimensional chair model.",
+
       foundLabel: "3D Design Monitor",
-      title: "3D Design Monitor found!",
+
+      title: "3D design monitor found!",
+
       story:
-        "Correct! 3D modeling software helps artists plan and shape digital objects.",
+        "Correct. Three-dimensional modeling software allows designers to visualize, refine, and test ideas digitally before physical production.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     EDITING MONITOR
+  ===================================================== */
     {
       id: "editing-monitor",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the screen showing a video timeline with coloured tracks.",
-      helpHint: "Look at the large monitor at the back-right edge.",
+
+      hint: "Separate clips, music, and sound effects can be arranged along a timeline here until they become one complete production.",
+
+      helpHint:
+        "Inspect the large computer screen at the back-right of the studio for a video-editing timeline with coloured tracks.",
+
       foundLabel: "Video Editing Monitor",
-      title: "Video Editing Monitor found!",
+
+      title: "Video editing monitor found!",
+
       story:
-        "Correct! Editors arrange video clips, sound and transitions on a timeline.",
+        "Correct. Video editing applications allow creators to organize footage, adjust timing, and combine visual and audio elements into a finished project.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     COFFEE CUP
+  ===================================================== */
     {
       id: "coffee-cup",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the brown takeaway drink cup between the workstations and the front desk.",
-      helpHint: "Look near the centre of the large foreground desk.",
+
+      hint: "A long creative session sometimes calls for a warm drink that can travel from a nearby café back to the workstation.",
+
+      helpHint:
+        "Search near the centre of the large foreground workbench for a brown takeaway drink container.",
+
       foundLabel: "Takeaway Coffee Cup",
-      title: "Takeaway Coffee Cup found!",
+
+      title: "Coffee cup found!",
+
       story:
-        "Correct! Breaks and drinks are common parts of long creative work sessions.",
+        "Correct. Creative projects often involve long periods of concentration, making occasional breaks an important part of a productive routine.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     LENS CAP
+  ===================================================== */
     {
       id: "lens-cap",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the separate black circular cap lying on the desk in front of the camera.",
-      helpHint: "Look along the bottom-left edge of the desk.",
+
+      hint: "When a photographer finishes shooting, this small protective cover helps keep dust and accidental contact away from delicate glass.",
+
+      helpHint:
+        "Look along the bottom-left edge of the main workbench, in front of the digital camera, for a separate black circular cover.",
+
       foundLabel: "Camera Lens Cap",
-      title: "Camera Lens Cap found!",
+
+      title: "Camera lens cap found!",
+
       story:
-        "Correct! A lens cap protects camera glass while the camera is not being used.",
+        "Correct. Lens caps protect camera lenses from dust, fingerprints, and accidental damage when equipment is not in use.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     ART POSTER
+  ===================================================== */
     {
       id: "art-poster",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the orange and blue illustration mounted on the studio wall.",
-      helpHint: "Look high on the back wall, just left of the studio light.",
+
+      hint: "Creative inspiration does not always come from a computer screen. Colourful artwork displayed nearby can help spark new visual ideas.",
+
+      helpHint:
+        "Look high on the back wall, just to the left of the studio light, for an orange-and-blue illustration.",
+
       foundLabel: "Colourful Art Poster",
-      title: "Colourful Art Poster found!",
+
+      title: "Art poster found!",
+
       story:
-        "Correct! Reference artwork can inspire colour and character-design decisions.",
+        "Correct. Displayed artwork can provide inspiration for colour choices, illustration styles, and creative direction during design projects.",
+
       clueType: "text",
     },
   ],
