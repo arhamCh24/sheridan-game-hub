@@ -36,139 +36,279 @@ const level3 = {
       "You solved the Library Mystery. Replay to discover a fresh set of study-space clues.",
   },
   steps: [
+    /* =====================================================
+     LAPTOP
+  ===================================================== */
     {
       id: "laptop",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the portable computer open in front of the student who is working alone.",
-      helpHint: "Look to the far-left side of the round foreground table.",
+
+      hint: "A shared table can become a personal workstation when this portable device is opened and an assignment needs attention.",
+
+      helpHint:
+        "Look toward the far-left side of the large round study table in the foreground for an open computer.",
+
       foundLabel: "Open Laptop",
-      title: "Open Laptop found!",
+
+      title: "Laptop found!",
+
       story:
-        "Correct! Laptops let students work on coursework from shared study spaces.",
+        "Correct. Portable computers allow students to work on assignments and access learning resources from almost anywhere on campus.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     NOTEBOOK
+  ===================================================== */
     {
       id: "notebook",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the spiral-bound pages ready for handwritten notes.",
-      helpHint: "Look on the front-left part of the round table.",
+
+      hint: "Quick sketches, lecture notes, and unexpected ideas can all find a permanent place here without needing a keyboard.",
+
+      helpHint:
+        "Inspect the front-left section of the round study table for a spiral-bound writing pad.",
+
       foundLabel: "Spiral Notebook",
-      title: "Spiral Notebook found!",
+
+      title: "Notebook found!",
+
       story:
-        "Correct! Paper notes are useful when you want to sketch an idea or study without a screen.",
+        "Correct. Handwritten notes and sketches remain useful for organizing ideas, even in a classroom filled with digital technology.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     STUDENT ID CARD
+  ===================================================== */
     {
       id: "student-id",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the small card that helps identify a student.",
+
+      hint: "A name and photograph on something small can confirm a person's connection to campus without requiring an introduction.",
+
       helpHint:
-        "Look near the front edge of the round table, just left of the paper map.",
+        "Look near the front edge of the round study table, just to the left of the paper campus guide.",
+
       foundLabel: "Student ID Card",
-      title: "Student ID Card found!",
+
+      title: "Student ID card found!",
+
       story:
-        "Correct! An identification card can help confirm membership in a campus community.",
+        "Correct. Student identification helps connect individuals to their campus community and may be used to access college services.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     WATER BOTTLE
+  ===================================================== */
     {
       id: "water-bottle",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the tall blue drink container with a metal cap.",
-      helpHint: "Look just behind the tablet on the foreground study table.",
+
+      hint: "Long study sessions are easier when a refreshing drink is close by and the container can be filled again instead of thrown away.",
+
+      helpHint:
+        "Look just behind the tablet on the foreground study table for a tall blue container with a metal cap.",
+
       foundLabel: "Reusable Water Bottle",
-      title: "Reusable Water Bottle found!",
+
+      title: "Water bottle found!",
+
       story:
-        "Correct! Refillable bottles help students stay hydrated throughout a long study day.",
+        "Correct. Bringing a reusable bottle helps students stay hydrated throughout the day while reducing reliance on disposable containers.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     TABLET
+  ===================================================== */
     {
       id: "tablet",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the touch-screen device propped upright without a physical keyboard.",
-      helpHint: "Look near the middle of the large foreground table.",
+
+      hint: "Reading documents, reviewing diagrams, and making digital annotations can all happen by touching a screen instead of using a keyboard.",
+
+      helpHint:
+        "Search near the middle of the large foreground table for a touchscreen device propped upright.",
+
       foundLabel: "Tablet Computer",
-      title: "Tablet Computer found!",
+
+      title: "Tablet found!",
+
       story:
-        "Correct! Tablets are often used for reading, annotating and reviewing course materials.",
+        "Correct. Touchscreen devices give students a convenient way to review documents, annotate notes, and access course materials.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     TEXTBOOK
+  ===================================================== */
     {
       id: "textbook",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the thick hardcover book with a dark-blue cover lying flat.",
+
+      hint: "When a quick explanation is not enough, this substantial printed resource can offer entire chapters of detailed information.",
+
       helpHint:
-        "Look behind the headphones toward the right-hand side of the table.",
+        "Look behind the headphones toward the right-hand side of the study table for a thick, dark-blue hardcover book.",
+
       foundLabel: "Thick Textbook",
-      title: "Thick Textbook found!",
+
+      title: "Textbook found!",
+
       story:
-        "Correct! Course books can provide detailed examples and reference material.",
+        "Correct. Textbooks provide structured explanations, examples, and reference material that support deeper understanding of a subject.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     HEADPHONES
+  ===================================================== */
     {
       id: "headphones",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the over-ear audio accessory resting on the table.",
-      helpHint: "Look to the right of the thick book on the foreground table.",
+
+      hint: "In a room filled with conversations, these can deliver a recorded lecture directly to one listener without disturbing everyone nearby.",
+
+      helpHint:
+        "Inspect the foreground study table to the right of the thick hardcover book for an over-ear audio accessory.",
+
       foundLabel: "Headphones",
+
       title: "Headphones found!",
+
       story:
-        "Correct! Headphones can be useful for listening to recorded lectures in a shared space.",
+        "Correct. Personal audio equipment allows students to listen to lectures and learning materials in shared study environments.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     BACKPACK
+  ===================================================== */
     {
       id: "backpack",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the large black bag resting on the right chair.",
-      helpHint: "Look along the far-right edge of the big foreground table.",
+
+      hint: "Books, chargers, and personal belongings can travel together throughout a busy campus day when everything has one place to go.",
+
+      helpHint:
+        "Look on the chair at the far-right edge of the large foreground study table for a black carrying bag.",
+
       foundLabel: "Black Backpack",
-      title: "Black Backpack found!",
+
+      title: "Backpack found!",
+
       story:
-        "Correct! A backpack helps students carry equipment, books and personal supplies.",
+        "Correct. Keeping study materials and personal essentials together makes moving between classrooms and study spaces more convenient.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     CAMPUS MAP
+  ===================================================== */
     {
       id: "campus-map",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the unfolded colour map that could help a new visitor find their way.",
-      helpHint: "Look across the open pages at the front-right of the table.",
+
+      hint: "Someone visiting an unfamiliar college can use this portable guide to understand where buildings and important destinations are located.",
+
+      helpHint:
+        "Look across the unfolded paper pages near the front-right section of the round study table.",
+
       foundLabel: "Folded Campus Guide",
-      title: "Folded Campus Guide found!",
+
+      title: "Campus map found!",
+
       story:
-        "Correct! A campus map can help visitors plan routes between buildings and services.",
+        "Correct. Campus maps help students and visitors navigate unfamiliar buildings, locate services, and plan routes between destinations.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     POWER ADAPTER
+  ===================================================== */
     {
       id: "power-adapter",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the small white charging block at the end of a cable.",
+
+      hint: "A charging cable alone is not always enough. This compact accessory converts electrical power into a form a connected device can use.",
+
       helpHint:
-        "Look near the tablet, on the tabletop slightly left of the folded map.",
+        "Look near the tablet, slightly left of the folded campus map, for a small white charging block attached to a cable.",
+
       foundLabel: "Power Adapter",
-      title: "Power Adapter found!",
+
+      title: "Power adapter found!",
+
       story:
-        "Correct! A power adapter converts electricity for a device; it is not a battery.",
+        "Correct. Power adapters convert electrical power into the voltage and current required by compatible electronic devices.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     POTTED PLANT
+  ===================================================== */
     {
       id: "potted-plant",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the tiny leafy plant sitting on the students’ shared table in the background.",
-      helpHint: "Look at the centre group-study table, between the people.",
+
+      hint: "Not everything in a study space is electronic or made for coursework. A little greenery can make a busy room feel more welcoming.",
+
+      helpHint:
+        "Inspect the group-study table in the centre background, between the students, for a small leafy decoration.",
+
       foundLabel: "Small Potted Plant",
-      title: "Small Potted Plant found!",
+
+      title: "Potted plant found!",
+
       story:
-        "Correct! Plants can make shared study spaces feel more welcoming.",
+        "Correct. Indoor plants bring a natural element into shared spaces and can make study environments feel more inviting.",
+
       clueType: "text",
     },
+
+    /* =====================================================
+     READING BOOK
+  ===================================================== */
     {
       id: "reading-book",
+
       prompt: "FIND THE OBJECT",
-      hint: "Find the open book being read by someone on the lounge sofa.",
-      helpHint: "Look at the seated student on the couch at the far right.",
+
+      hint: "While others work with digital screens, someone nearby is exploring information the traditional way, turning printed pages by hand.",
+
+      helpHint:
+        "Look at the student seated on the lounge sofa at the far-right side of the room. The reading material is open in their hands.",
+
       foundLabel: "Open Reading Book",
-      title: "Open Reading Book found!",
+
+      title: "Reading book found!",
+
       story:
-        "Correct! Reading can be part of both classwork and independent learning.",
+        "Correct. Printed books remain valuable for independent reading, research, and learning alongside digital resources.",
+
       clueType: "text",
     },
   ],
