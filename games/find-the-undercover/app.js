@@ -8,7 +8,9 @@ const TOTAL_ROUNDS = 3;
 const CLUE_LIMIT = 5;
 const NPC_IMAGES = Array.from({ length: 8 }, (_, index) => `./src/assets/img_npc${index + 1}.png`);
 const app = document.getElementById('app');
+const clueScrollPositions = new Map();
 let store;
+let renderedGame = null;
 
 const state = {
   words: [],
@@ -19,7 +21,6 @@ const state = {
   selectedNpcId: null,
   attemptsLeft: MAX_ATTEMPTS,
   score: 0,
-  roundsWon: 0,
   scoreSettled: false,
   scoreResult: null,
   scoreError: '',
@@ -98,7 +99,6 @@ async function startGame() {
   state.selectedNpcId = null;
   state.attemptsLeft = MAX_ATTEMPTS;
   state.score = 0;
-  state.roundsWon = 0;
   state.scoreSettled = false;
   state.scoreResult = null;
   state.scoreError = '';
@@ -151,11 +151,10 @@ async function submitFinalScore() {
   render();
   try {
     state.scoreResult = await store.submitScore('find-undercover', state.score);
-    state.status = state.pendingStatus;
   } catch (error) {
     state.scoreError = error?.message || 'Could not save your score.';
-    state.status = state.pendingStatus;
   }
+  state.status = state.pendingStatus;
   render();
 }
 
@@ -197,13 +196,10 @@ function submitVote() {
   if (npc?.role === 'UNDERCOVER') {
     state.roundOutcome = 'FOUND';
     playSound('CorrectAnswer');
+    state.score += 30;
     if (state.round === TOTAL_ROUNDS) {
-      state.score += 30;
-      state.roundsWon += 1;
       finishGame('WON');
     } else {
-      state.score += 30;
-      state.roundsWon += 1;
       state.status = 'ROUND_RESULT';
       state.selectedNpcId = null;
       state.feedback = '';
@@ -247,6 +243,16 @@ function render() {
   if (!state.game) {
     app.innerHTML = `<div class="top-bar"><h1>Find the Undercover</h1></div><p class="loading-msg">Loading game...</p>`;
     return;
+  }
+
+  if (renderedGame !== state.game) {
+    clueScrollPositions.clear();
+    renderedGame = state.game;
+  } else {
+    app.querySelectorAll('.npc-card').forEach(card => {
+      const clueList = card.querySelector('ul');
+      if (clueList) clueScrollPositions.set(Number(card.dataset.npcId), clueList.scrollTop);
+    });
   }
 
   const finalResult = state.status === 'WON' || state.status === 'LOST';
@@ -314,6 +320,11 @@ function render() {
     ` : ''}
     ${result}
     ${intro}`;
+
+  app.querySelectorAll('.npc-card').forEach(card => {
+    const clueList = card.querySelector('ul');
+    if (clueList) clueList.scrollTop = clueScrollPositions.get(Number(card.dataset.npcId)) || 0;
+  });
 }
 
 app.addEventListener('click', event => {

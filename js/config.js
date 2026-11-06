@@ -106,7 +106,7 @@ export const GAMES = [
     status: "playable",
     competitive: false,
     href: "games/program-explorer/index.html",
-    duration: "5–10 min",
+    duration: "10 min",
   },
   {
     id: "kahoot",
@@ -117,7 +117,7 @@ export const GAMES = [
     accent: "indigo",
     status: "playable",
     competitive: false,
-    href: "https://wayground.com/join?gc=03413987",
+    href: "games/night-quiz/quiz.html",
     duration: "5-10 mins",
   },
 ];
