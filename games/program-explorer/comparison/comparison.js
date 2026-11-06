@@ -1,3 +1,6 @@
+import { createQrSvg } from '../../../js/vendor/qr-code.js';
+import { downloadComparisonPdf } from './pdf-export.js';
+
 export function initProgramComparison(programList, switchMode) {
   const programs = programList;
   const programChecklist = document.querySelector('#programChecklist');
@@ -85,7 +88,8 @@ export function initProgramComparison(programList, switchMode) {
       ['Co-op', 'coop'],
       ['Curriculum', 'curriculum'],
       ['Key highlights', 'highlights'],
-      ['Career paths', 'careers']
+      ['Career paths', 'careers'],
+      ['Program home page', 'homepage']
     ];
     const wrapper = document.createElement('div');
     wrapper.className = 'comparison-table-wrap';
@@ -153,6 +157,24 @@ export function initProgramComparison(programList, switchMode) {
   }
 
   function createComparisonList(program, field) {
+    if (field === 'homepage') {
+      const homepage = document.createElement('div');
+      homepage.className = 'comparison-homepage-value';
+      if (!program.homepage) {
+        homepage.textContent = 'Not listed in the program guide.';
+        return homepage;
+      }
+      const qr = document.createElement('div');
+      qr.className = 'comparison-homepage-qr';
+      qr.innerHTML = createQrSvg(program.homepage);
+      const address = document.createElement('a');
+      address.href = program.homepage;
+      address.target = '_blank';
+      address.rel = 'noopener noreferrer';
+      address.textContent = program.homepage;
+      homepage.append(qr, address);
+      return homepage;
+    }
     const items = formatComparisonItems(program[field]);
     if (!items.length) items.push('Not listed in the program guide.');
     const list = document.createElement('ul');
@@ -183,7 +205,10 @@ export function initProgramComparison(programList, switchMode) {
   window.addEventListener('resize', () => {
     if (window.innerWidth <= 700 && programPicker.hidden) setProgramPickerExpanded(true);
   });
-  exportComparisonButton.addEventListener('click', () => window.print());
+  exportComparisonButton.addEventListener('click', () => {
+    const selected = programs.filter(program => selectedProgramNames.has(program.name));
+    downloadComparisonPdf(selected);
+  });
   document.querySelector('#clearCompareButton').addEventListener('click', () => {
     selectedProgramNames.clear();
     comparisonResults.replaceChildren();

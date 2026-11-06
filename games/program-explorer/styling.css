@@ -264,6 +264,76 @@
   background: #eaf6fe;
 }
 
+.program-explorer .program-qr-toggle {
+  display: inline-grid;
+  place-items: center;
+  margin-left: 4px;
+  padding: 0 5px;
+  border: 1px solid #9bc6e2;
+  border-radius: 5px;
+  background: #fff;
+  color: #145987;
+  font: inherit;
+  line-height: 1.25;
+  cursor: pointer;
+}
+
+.program-explorer .recommended-program-card .program-homepage-link,
+.program-explorer .recommended-program-card a {
+  color: var(--sky);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+
+.program-explorer .program-qr-image {
+  width: 132px;
+  margin-top: 8px;
+  padding: 6px;
+  border: 1px solid #c9e2f4;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.program-explorer .program-qr-image[hidden] {
+  display: none;
+}
+
+.program-explorer .program-qr-image svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.program-explorer .comparison-homepage-value {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+  align-items: flex-start;
+}
+
+.program-explorer .comparison-homepage-qr {
+  width: 152px;
+  padding: 6px;
+  border: 1px solid #d7e8f3;
+  border-radius: 8px;
+  background: #fff;
+}
+
+.program-explorer .comparison-homepage-qr svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.program-explorer .comparison-homepage-value a {
+  color: var(--sky);
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .program-explorer .result-card .learn-more-button,
 .program-explorer .quiz-actions .compare-recommendations-button {
   position: static;

@@ -1,3 +1,5 @@
+import { createQrSvg } from '../../../js/vendor/qr-code.js';
+
 export function initProgramQuiz({ programs, knowledgeMarkdown, switchMode, selectProgramsForComparison, sendChatMessage, statusNote }) {
   const quizContent = document.querySelector('#quizContent');
   const quizPanel = document.querySelector('#quizPanel');
@@ -409,6 +411,7 @@ let quizError = '';
         highlightsLabel.textContent = 'Key Program Highlights: ';
         const careersLabel = document.createElement('strong');
         careersLabel.textContent = 'Career paths: ';
+        let programQrImage = null;
         details.append(
           credentialLabel, document.createTextNode(program?.credential || 'Not specified'),
           document.createTextNode(' · '), durationLabel, document.createTextNode(program?.duration || 'Not specified'),
@@ -416,11 +419,39 @@ let quizError = '';
           document.createElement('br'), highlightsLabel, document.createTextNode(program?.highlights || 'Not specified'),
           document.createElement('br'), careersLabel, document.createTextNode(program?.careers || 'Not specified')
         );
+        if (program?.homepage) {
+          details.append(document.createElement('br'));
+          const homepageLabel = document.createElement('strong');
+          homepageLabel.textContent = 'Program home page: ';
+          const homepageLink = document.createElement('a');
+          homepageLink.href = program.homepage;
+          homepageLink.target = '_blank';
+          homepageLink.rel = 'noopener noreferrer';
+          homepageLink.textContent = program.homepage;
+          details.append(homepageLabel, homepageLink);
+          const qrButton = document.createElement('button');
+          qrButton.className = 'program-qr-toggle';
+          qrButton.type = 'button';
+          qrButton.textContent = 'QR Code';
+          qrButton.setAttribute('aria-label', 'Show QR code for program home page');
+          qrButton.setAttribute('aria-expanded', 'false');
+          programQrImage = document.createElement('div');
+          programQrImage.className = 'program-qr-image';
+          programQrImage.hidden = true;
+          qrButton.addEventListener('click', () => {
+            const showQr = programQrImage.hidden;
+            if (showQr && !programQrImage.firstChild) programQrImage.innerHTML = createQrSvg(program.homepage);
+            programQrImage.hidden = !showQr;
+            qrButton.setAttribute('aria-expanded', String(showQr));
+          });
+          details.append(document.createTextNode(' '), qrButton);
+        }
         programCard.append(details);
+        if (programQrImage) programCard.append(programQrImage);
         const learnMore = document.createElement('button');
         learnMore.className = 'text-button learn-more-button';
         learnMore.type = 'button';
-        learnMore.textContent = 'Learn more about this program';
+        learnMore.textContent = 'Ask more about this program';
         learnMore.hidden = !program;
         learnMore.addEventListener('click', () => {
           switchMode('chat');
