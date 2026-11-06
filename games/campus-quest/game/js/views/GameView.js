@@ -111,6 +111,19 @@ export default class GameView {
 
     this.roomStage = document.getElementById("roomStage");
 
+    // A full-screen pannable scene helps phone users accurately tap small objects.
+    this.zoomRoomButton = document.getElementById("zoomRoomButton");
+    this.roomZoomHelp = document.getElementById("roomZoomHelp");
+    this.zoomRoomButton?.addEventListener("click", () => {
+      this.setRoomZoom(!this.roomStage.classList.contains("is-zoomed"));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && this.roomStage.classList.contains("is-zoomed")) {
+        this.setRoomZoom(false);
+        this.zoomRoomButton?.focus();
+      }
+    });
+
     this.roomPanel = document.getElementById("roomPanel");
 
     this.roomMap = document.getElementById("roomMap");
@@ -557,7 +570,30 @@ export default class GameView {
   // RESPONSIVE ROOM SIZE
   // =========================================================
 
+  setRoomZoom(enabled) {
+    const isZoomed = Boolean(enabled) && window.matchMedia("(max-width: 700px)").matches;
+    this.roomStage.classList.toggle("is-zoomed", isZoomed);
+    document.body.classList.toggle("quest-scene-zoom-open", isZoomed);
+    this.zoomRoomButton?.setAttribute("aria-pressed", String(isZoomed));
+    if (this.zoomRoomButton) {
+      this.zoomRoomButton.innerHTML = isZoomed
+        ? '<span aria-hidden="true">×</span> Exit zoom'
+        : '<span aria-hidden="true">⤢</span> Zoom in';
+    }
+    if (this.roomZoomHelp) {
+      this.roomZoomHelp.textContent = isZoomed ? "Swipe to explore the scene" : "Find the objects in the scene";
+    }
+    if (isZoomed) {
+      this.roomStage.scrollLeft = 0;
+      this.roomStage.scrollTop = 0;
+      this.zoomRoomButton?.focus();
+    }
+  }
+
   fitRoom() {
+    if (this.roomStage.classList.contains("is-zoomed") && window.innerWidth > 700) {
+      this.setRoomZoom(false);
+    }
     const desktop = window.matchMedia("(min-width: 1025px)").matches;
 
     if (!desktop) {

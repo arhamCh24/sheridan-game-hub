@@ -1,18 +1,4 @@
 /* Campus Quest now uses the same Game Hub navbar and player controls. */
-.header-settings {
-  min-height: 40px;
-  border: 1px solid #c4d8e8;
-  border-radius: 12px;
-  padding: 0 13px;
-  color: #124b7b;
-  background: #f1f8fd;
-  font: inherit;
-  font-size: 12px;
-  font-weight: 800;
-}
-.header-settings:hover {
-  background: #e3f1fc;
-}
 .hub-quest-error {
   max-width: 560px;
   margin: 14vh auto;
@@ -43,4 +29,322 @@
 /* TV scoreboard stays separate, not advertised inside the game. */
 .completion-leaderboard-button {
   display: none !important;
+}
+
+/* The portal also defines .step/.step-number for unrelated cards.  Explicitly
+   reset those positions so Quest progress never floats outside its cells. */
+.campus-quest-page .progress .step-number {
+  position: relative;
+  inset: auto;
+}
+.campus-quest-page .progress .step {
+  box-shadow: none;
+}
+@media (min-width: 701px) and (max-width: 1024px) {
+  .campus-quest-page .progress .step {
+    gap: 6px;
+    padding: 5px;
+  }
+  .campus-quest-page .progress .step-title { font-size: 12px; }
+  .campus-quest-page .progress .step-number {
+    width: 27px;
+    height: 27px;
+    flex-basis: 27px;
+  }
+}
+
+/* Campus Quest mobile: compact chrome and a readable, playable challenge. */
+.room-mobile-tools {
+  display: none;
+}
+
+@media (max-width: 720px) {
+  .campus-quest-page .site-header .header-inner {
+    width: calc(100% - 24px);
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 12px 0;
+  }
+  .campus-quest-page .header-actions {
+    min-width: 0;
+    width: 100%;
+    gap: 8px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .campus-quest-page .header-link {
+    display: inline-flex;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    font-size: 11px;
+    color: #0b3973;
+  }
+  .campus-quest-page .player-widget {
+    min-width: 0;
+    width: auto;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin-left: auto;
+  }
+  .campus-quest-page .header-score,
+  .campus-quest-page .header-profile,
+  .campus-quest-page .header-switch {
+    min-height: 36px;
+    border-radius: 10px;
+  }
+  .campus-quest-page .header-score {
+    gap: 4px;
+    padding: 0 7px;
+    font-size: 12px;
+  }
+  .campus-quest-page .header-score svg {
+    width: 14px;
+    height: 14px;
+  }
+  .campus-quest-page .header-score > span {
+    font-size: 9px;
+  }
+  .campus-quest-page .header-profile {
+    max-width: 98px;
+    gap: 4px;
+    padding: 0 8px;
+    font-size: 12px;
+  }
+  .campus-quest-page .header-profile b {
+    max-width: 62px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .campus-quest-page .header-switch {
+    width: 36px;
+    min-width: 36px;
+    padding: 0;
+  }
+  .campus-quest-page .header-switch svg {
+    display: block;
+    width: 17px;
+    height: 17px;
+  }
+  .campus-quest-page .header-switch span {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .campus-quest-page .game-app {
+    padding: 12px;
+    min-height: 0;
+  }
+  .campus-quest-page .game-header {
+    min-height: 0;
+    margin-bottom: 9px;
+  }
+  .campus-quest-page .game-title-copy h1 {
+    font-size: clamp(19px, 5.7vw, 25px);
+    line-height: 1.2;
+    white-space: normal;
+  }
+  .campus-quest-page .level-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 9px;
+    padding: 6px 9px;
+  }
+  .campus-quest-page .clue-panel {
+    min-height: 0;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+    border-radius: 15px;
+    margin-bottom: 10px;
+  }
+  .campus-quest-page .clue-icon,
+  .campus-quest-page .clue-divider {
+    display: none;
+  }
+  .campus-quest-page .clue-word {
+    min-width: 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 5px 10px;
+  }
+  .campus-quest-page .clue-progress {
+    margin: 0;
+    font-size: 10px;
+    letter-spacing: .09em;
+    white-space: nowrap;
+  }
+  .campus-quest-page #cluePrompt {
+    min-width: 0;
+    font-size: clamp(18px, 5vw, 22px);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+  .campus-quest-page .clue-hint {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: start;
+    gap: 2px 9px;
+    padding-top: 9px;
+    border-top: 1px solid var(--border);
+  }
+  .campus-quest-page .hint-label {
+    margin-top: 3px;
+    font-size: 9px;
+  }
+  .campus-quest-page #clueHint {
+    font-size: 13px;
+    line-height: 1.4;
+    overflow-wrap: break-word;
+  }
+  .campus-quest-page #feedback {
+    grid-column: 1 / -1;
+    min-height: 0;
+    margin-top: 3px;
+    font-size: 11px;
+  }
+  .campus-quest-page #feedback:empty {
+    display: none;
+  }
+  .campus-quest-page .play-layout {
+    gap: 10px;
+  }
+  .campus-quest-page .progress-panel {
+    order: -1;
+    padding: 9px 10px 8px;
+    border-radius: 15px;
+  }
+  .campus-quest-page .performance-panel {
+    gap: 7px;
+    padding: 0 0 8px;
+  }
+  .campus-quest-page .performance-stat {
+    padding: 8px 4px;
+    border-radius: 9px;
+  }
+  .campus-quest-page .performance-stat > span {
+    font-size: 8px;
+  }
+  .campus-quest-page .performance-stat strong {
+    font-size: 15px;
+  }
+  .campus-quest-page .performance-stat strong small {
+    font-size: 10px;
+  }
+  .campus-quest-page .progress {
+    margin: 7px 0 0;
+    gap: 5px;
+    align-items: center;
+  }
+  .campus-quest-page .step {
+    min-width: 0;
+    min-height: 36px;
+    padding: 4px;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .campus-quest-page .step-number {
+    flex: 0 0 26px;
+    width: 26px;
+    height: 26px;
+    font-size: 11px;
+  }
+  .campus-quest-page .step-copy {
+    display: none;
+  }
+  .campus-quest-page .room-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    min-height: 0;
+    overflow: visible;
+    gap: 7px;
+  }
+  .room-mobile-tools {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 0 2px;
+  }
+  .room-mobile-tools > span {
+    min-width: 0;
+    color: #567083;
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .room-zoom-button {
+    flex: 0 0 auto;
+    min-height: 40px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #fff;
+    border: 0;
+    border-radius: 10px;
+    background: #0b3973;
+    font-size: 12px;
+    font-weight: 800;
+  }
+  .room-zoom-button > span {
+    font-size: 20px;
+    line-height: 1;
+  }
+  .campus-quest-page .room-panel {
+    width: 100% !important;
+    height: auto !important;
+    flex: 0 0 auto;
+    border-radius: 12px;
+  }
+  .campus-quest-page #roomMap {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  body.quest-scene-zoom-open {
+    overflow: hidden !important;
+  }
+  .campus-quest-page .room-stage.is-zoomed {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+    display: block;
+    overflow: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 0 0 30px;
+    background: #eef5fa;
+  }
+  .campus-quest-page .room-stage.is-zoomed .room-mobile-tools {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 5;
+    width: 100%;
+    min-height: 58px;
+    padding: calc(8px + env(safe-area-inset-top, 0px)) 15px 8px;
+    background: rgba(255, 255, 255, .97);
+    border-bottom: 1px solid #d4e2ed;
+    box-shadow: 0 4px 18px rgba(0, 56, 101, .1);
+  }
+  .campus-quest-page .room-stage.is-zoomed .room-panel {
+    width: max(100%, 235vw) !important;
+    max-width: none;
+    margin: 12px 0 20px;
+    border-radius: 0;
+  }
+}
+
+@media (max-width: 380px) {
+  .campus-quest-page .header-link { font-size: 10px; }
+  .campus-quest-page .header-score > span { display: none; }
+  .campus-quest-page .header-profile { max-width: 80px; }
+  .campus-quest-page .header-profile b { max-width: 49px; }
+  .campus-quest-page .room-mobile-tools > span { font-size: 10px; }
 }

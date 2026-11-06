@@ -885,63 +885,6 @@ body.debug-hotspots .hotspot {
     height: calc(100dvh - 60px);
   }
 }
-.hide-game-hints .hint-label,
-.hide-game-hints #clueHint {
-  visibility: hidden;
-}
-.game-settings-dialog {
-  width: min(460px, calc(100% - 28px));
-  padding: 24px;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: var(--white);
-  color: var(--ink);
-  box-shadow: 0 24px 65px rgba(30, 41, 59, 0.28);
-}
-.game-settings-dialog::backdrop {
-  background: rgba(30, 41, 59, 0.62);
-  backdrop-filter: blur(4px);
-}
-.game-settings-dialog h2 {
-  margin: 0 0 14px;
-}
-.game-settings-dialog label {
-  padding: 12px 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  border-bottom: 1px solid var(--border);
-}
-.game-settings-dialog label span {
-  display: flex;
-  flex-direction: column;
-}
-.game-settings-dialog label strong {
-  font-size: 12px;
-}
-.game-settings-dialog label small {
-  margin-top: 3px;
-  color: var(--muted);
-  font-size: 9px;
-}
-.game-settings-dialog input {
-  width: 18px;
-  height: 18px;
-  accent-color: var(--teal-dark);
-}
-.game-settings-close {
-  position: absolute;
-  right: 14px;
-  top: 14px;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  background: var(--white);
-  cursor: pointer;
-  font-size: 18px;
-}
 .load-error a {
   color: var(--teal-dark);
   font-weight: 800;
