@@ -3,6 +3,7 @@
 - **Target Students**: graduated students, degree students
 - **Duration**: 1 yr
 - **Co-op**: None
+- **Homepage**: /cloud-security
 - **Core Curriculum & Technical Skills**:
   - Cloud Infrastructure: Security architecture across major cloud platforms (AWS, Azure, GCP).
   - Risk & Governance: Cloud compliance, risk assessment, and identity and access management (IAM).
@@ -25,6 +26,7 @@
 - **Target Students**: high school students, graduated students
 - **Duration**: 2 yr
 - **Co-op**: None
+- **Homepage**: /computer-programming
 - **Core Curriculum & Technical Skills**:
   - Programming Fundamentals: Object-oriented programming using Java, C#, and Python.
   - Web Development: Front-end and back-end web technologies (HTML, CSS, JavaScript, database connectivity).
@@ -47,6 +49,7 @@
 - **Target Students**: high school students
 - **Duration**: 4 yr
 - **Co-op**: Mandatory Co-op
+- **Homepage**: /bachelor-computer-science
 - **Core Curriculum & Technical Skills**:
   - Core Computer Science: Advanced algorithms, data structures, discrete mathematics, and operating systems.
   - Software Architecture: Enterprise software design patterns, full-stack development, and DevOps practices.
@@ -69,6 +72,7 @@
 - **Target Students**: high school students
 - **Duration**: 2 yr
 - **Co-op**: None
+- **Homepage**: /computer-systems-technician-cyber-security
 - **Core Curriculum & Technical Skills**:
   - Security Fundamentals: Information security principles, cryptography, and risk assessment.
   - Network Defense: Firewall configuration, intrusion detection systems (IDS), and VPN management.
@@ -91,6 +95,7 @@
 - **Target Students**: high school students, graduated students
 - **Duration**: 3 yr
 - **Co-op**: Optional Co-op
+- **Homepage**: /computer-systems-technician-information-technology-infrastructure-services
 - **Core Curriculum & Technical Skills**:
   - Infrastructure Services: Server administration, hardware configuration, and data center management.
   - Networking: Local Area Networks (LAN), Wide Area Networks (WAN), and routing protocols.
@@ -113,6 +118,7 @@
 - **Target Students**: high school students
 - **Duration**: 4 yr
 - **Co-op**: Mandatory Co-op
+- **Homepage**: /bachelor-information-sciences-cyber-security
 - **Core Curriculum & Technical Skills**:
   - Advanced Cyber Defense: Ethical hacking, penetration testing, and advanced threat hunting.
   - Digital Forensics: Cybercrime investigation, evidence recovery, and legal compliance.
@@ -135,6 +141,7 @@
 - **Target Students**: graduated students, degree students
 - **Duration**: 1 yr
 - **Co-op**: None
+- **Homepage**: /game-development-advanced-programming
 - **Core Curriculum & Technical Skills**:
   - Game Engines & Programming: Advanced C++, C#, and game engine architecture (Unity, Unreal Engine).
   - Graphics & Physics: 3D mathematics, real-time rendering pipelines, and physics simulation.
@@ -157,6 +164,7 @@
 - **Target Students**: graduated students, degree students
 - **Duration**: 1 yr
 - **Co-op**: None
+- **Homepage**: /interactive-media-management-digital-design
 - **Core Curriculum & Technical Skills**:
   - Digital Design & UX/UI: User experience research, wireframing, and interface design principles.
   - Interactive Media Production: Front-end web development, interactive storytelling, and multimedia integration.
@@ -179,6 +187,7 @@
 - **Target Students**: high school students
 - **Duration**: 3 yr
 - **Co-op**: Optional Co-op
+- **Homepage**: /network-engineering-technology
 - **Core Curriculum & Technical Skills**:
   - Enterprise Networking: Advanced routing and switching (Cisco CCNP level), wireless networks, and IP telephony.
   - Network Automation: Python scripting for network management, software-defined networking (SDN).
@@ -201,6 +210,7 @@
 - **Target Students**: graduated students, degree students
 - **Duration**: 1-2 yr
 - **Co-op**: Optional Co-op for 1yr; Mandatory Co-op for 2yr
+- **Homepage**: /operational-technology-cybersecurity
 - **Core Curriculum & Technical Skills**:
   - Industrial Control Systems (ICS): SCADA systems, Programmable Logic Controllers (PLCs), and operational network protocols.
   - OT Security Frameworks: Threat landscape for manufacturing, energy, and utility sectors (IEC 62443 standards).
@@ -223,6 +233,7 @@
 - **Target Students**: graduated students, degree students
 - **Duration**: 1-2 yr
 - **Co-op**: Optional Co-op for 1yr; Mandatory Co-op for 2yr
+- **Homepage**: /project-management-information-technology
 - **Core Curriculum & Technical Skills**:
   - Project Management Methodologies: Agile, Scrum, Waterfall, and hybrid project frameworks.
   - IT Resource Management: Budgeting, resource allocation, risk mitigation, and procurement in tech projects.
@@ -245,6 +256,7 @@
 - **Target Students**: high school students, graduated students
 - **Duration**: 3 yr
 - **Co-op**: Optional Co-op
+- **Homepage**: /computer-systems-technology-software-development-and-network-engineering
 - **Core Curriculum & Technical Skills**:
   - Software Engineering & Programming: Java, Java EE, C, C#, and .NET technologies.
   - Web & Mobile Technologies: Modern web development and interactive application design.
@@ -268,6 +280,7 @@
 - **Target Students**: graduated students, degree students
 - **Duration**: 1-2 yr
 - **Co-op**: Optional Co-op
+- **Homepage**: /artificial-intelligence-development-and-applications
 - **Core Curriculum & Technical Skills**:
   - AI & Machine Learning: Introduction to AI, Advanced Python for AI & ML, Neural Networks & Deep Learning.
   - Data Science & Analytics: Data Science, Big Data Analysis and Storage, Data Visualization, Social Media Data Mining & Analysis.

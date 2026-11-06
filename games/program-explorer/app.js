@@ -34,6 +34,7 @@ function parsePrograms(markdown) {
     const [heading, ...lines] = section.split('\n');
     return {
       name: heading.trim(),
+      homepage: `https://www.sheridancollege.ca/programs${readProgramField(lines, 'Homepage')}`,
       credential: readProgramField(lines, 'Credential Level'),
       duration: readProgramField(lines, 'Duration'),
       coop: readProgramField(lines, 'Co-op'),
