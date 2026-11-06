@@ -11,8 +11,9 @@
   <link rel="stylesheet" href="../../css/main.css">
   <link rel="stylesheet" href="../../css/game.css">
   <link rel="stylesheet" href="styling.css">
-  <script src="chat-config.js"></script>
-  <script src="app.js" defer></script>
+  <script src="chat/chat-config.js"></script>
+  <script src="quiz/quiz-config.js"></script>
+  <script type="module" src="app.js"></script>
   <script type="module" src="../../js/chrome.js"></script>
 </head>
 <body class="game-page program-explorer">
@@ -49,20 +50,20 @@
     </nav>
 
     <section class="panel chat-panel" id="chatPanel" aria-labelledby="chatTab" hidden>
-      <div class="panel-intro"><div><h2>Explore a program</h2><p>Ask about courses, career paths, credentials, or Open House details.</p></div></div>
+      <div class="panel-intro"><div><h2>Explore a program</h2><p>Ask about courses, career paths, credentials, or Open House details.</p></div><button class="text-button reset-chat-button" id="resetChatButton" type="button">Reset chat</button></div>
       <div class="chat-messages" id="chatMessages" aria-live="polite">
-        <div class="message bot">Welcome to Sheridan Open House! 🎓<br>I can help you explore our programs, understand what you’ll learn, and find a path that fits your interests and goals.<br><br>Is there a program you’re interested in? If you’re still exploring, try the <a class="quiz-inline-link" id="quizInlineLink" href="#quizPanel">Quick Quiz</a> and I’ll help you narrow down a recommendation.</div>
+        <div class="message bot">Welcome to Sheridan Open House! 🎓<br>I can help you explore our programs, understand what you’ll learn, and find a path that fits your interests and goals.<br><br>Is there a program you’re interested in? Tell me about your educational background, work experience, goals, or interests, and I’ll help you find a program that fits.<br>If you’re still exploring, try the <a class="quiz-inline-link" id="quizInlineLink" href="#quizPanel">Quick Quiz</a> and I’ll help you narrow down a recommendation.</div>
       </div>
       <form class="chat-input-area" id="chatForm">
         <input type="text" id="userInput" aria-label="Message" placeholder="Type your question…" autocomplete="off">
         <button class="primary-button" type="submit" aria-label="Send question">Send <span aria-hidden="true">↑</span></button>
       </form>
-      <div class="data-note chat-footer-actions"><span id="knowledgeStatus" aria-live="polite"></span><button class="text-button reset-chat-button" id="resetChatButton" type="button">Reset chat</button></div>
+      <div class="data-note chat-footer-actions"><span id="knowledgeStatus" aria-live="polite"></span></div>
     </section>
 
     <section class="panel quiz-panel" id="quizPanel" aria-labelledby="quizTab">
       <div class="panel-intro">
-        <div><h2>Quick Quiz</h2><p>Answer 4–7 questions to find programs that match your interests.</p></div>
+        <div><h2>Quick Quiz</h2><p>Answer the questions to find programs that match your preferences.</p></div>
         <div class="quiz-progress-wrap">
           <div class="question-top"><strong id="quizCount">Question 1</strong></div>
           <div class="progress-track" aria-hidden="true"><div class="progress-bar" id="progressBar"></div></div>
@@ -74,12 +75,17 @@
 
     <section class="panel compare-panel" id="comparePanel" aria-labelledby="compareTab" hidden>
       <div class="panel-intro"><div><h2>Compare programs</h2><p>Choose up to three programs to compare their credentials, focus, curriculum, highlights, and career paths.</p></div></div>
-      <div class="compare-toolbar"><p class="compare-selection-count" id="compareSelectionCount">Select at least two programs.</p><div><button class="text-button" id="clearCompareButton" type="button">Clear selection</button><button class="primary-button" id="compareSelectedButton" type="button" disabled>Compare selected</button></div></div>
-      <div class="program-checklist" id="programChecklist" aria-label="FAST programs to compare"></div>
+      <div class="compare-toolbar">
+        <div class="program-picker-controls"><button class="text-button program-picker-toggle" id="programPickerToggle" type="button" aria-expanded="true" aria-controls="programPicker">Hide program choices ↑</button><span class="program-picker-status" id="programPickerStatus" aria-live="polite"></span></div>
+        <div class="compare-toolbar-actions"><button class="text-button" id="clearCompareButton" type="button">Clear selection</button><button class="primary-button" id="compareSelectedButton" type="button" disabled>Compare selected</button></div>
+        <div class="program-picker" id="programPicker">
+          <p class="compare-selection-count" id="compareSelectionCount" aria-live="polite">Select at least two programs.</p>
+          <div class="program-checklist" id="programChecklist" aria-label="FAST programs to compare"></div>
+        </div>
+      </div>
       <div class="comparison-results" id="comparisonResults" aria-live="polite"></div>
       <div class="comparison-export"><button class="primary-button" id="exportComparisonButton" type="button" disabled>Export PDF</button></div>
     </section>
-      <footer>Use your interests to explore. Visit the Open House to learn more from faculty and students.</footer>
       </section>
     </div>
   </main>
