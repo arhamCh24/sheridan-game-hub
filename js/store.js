@@ -278,8 +278,9 @@ export class FirestoreStore extends BaseStore {
       try {
         const snapshot = await this.live.getDocs(this.collection("profiles"));
         return snapshot.docs.some(
-          (doc) => String(doc.data().displayName || "")
-            .toLocaleLowerCase("en") === name,
+          (doc) =>
+            String(doc.data().displayName || "").toLocaleLowerCase("en") ===
+            name,
         );
       } catch {
         throw new Error("Could not check player names. Please try again.");
@@ -499,9 +500,10 @@ export async function initStore({
   fullBoard = false,
   fullProfiles = false,
 } = {}) {
-  const store = !forceDemo && firebaseIsConfigured()
-    ? new FirestoreStore({ fullBoard, fullProfiles })
-    : new DemoStore();
+  const store =
+    !forceDemo && firebaseIsConfigured()
+      ? new FirestoreStore({ fullBoard, fullProfiles })
+      : new DemoStore();
   await store.init();
   return store;
 }

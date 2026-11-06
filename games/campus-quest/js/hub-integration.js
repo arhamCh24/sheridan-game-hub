@@ -24,7 +24,6 @@ function showHeader(gameplay) {
         <span class="brand-text"><strong>SHERIDAN</strong><span>GAME HUB <span class="brand-dot">•</span> OPEN HOUSE</span></span>
       </a>
       <div class="header-actions">
-        ${gameplay ? '<button id="questSettings" class="header-settings" type="button">Settings</button>' : ""}
         <a class="header-link" href="${gameplay ? questHome : hubHome + "#games"}">${gameplay ? "← Quest levels" : "← All games"}</a>
         <div id="playerWidget" class="player-widget" aria-label="Current player"></div>
       </div>

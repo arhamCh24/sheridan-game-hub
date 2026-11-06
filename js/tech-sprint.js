@@ -47,9 +47,16 @@ let store,
   step = 0,
   correct = 0,
   chosen = null,
-  selectedAnswers = [],
   saving = false;
 const container = document.querySelector("#gameContent");
+/** Reposition the screen after a new stage is rendered. Otherwise an iPhone
+ *  user can stay scrolled to the old Next/Start button, missing the new prompt. */
+function revealStage(selector) {
+  const stage = container.querySelector(selector);
+  if (!stage) return;
+  stage.scrollIntoView({ behavior: "auto", block: "start" });
+  stage.querySelector("h2[tabindex]")?.focus({ preventScroll: true });
+}
 function showIntro() {
   container.innerHTML = `<div class="game-panel"><div class="mini-eyebrow">READY WHEN YOU ARE</div><h2>Think fast.<br>Stay curious.</h2><p>Answer five questions about the technology that powers everyday life. Each correct answer earns <strong>20 Sheridan Points</strong>.</p><div class="game-checklist"><span>${icon("check", 18)} 5 questions</span><span>${icon("check", 18)} No time pressure</span><span>${icon("check", 18)} Highest score counts</span></div><button id="startGame" class="button button-primary button-lg" type="button">Start challenge ${icon("arrow", 18)}</button></div>`;
   container.querySelector("#startGame").addEventListener("click", async () => {
@@ -58,9 +65,9 @@ function showIntro() {
       step = 0;
       correct = 0;
       chosen = null;
-      selectedAnswers = [];
       setGameplayActive(true);
       showQuestion();
+      revealStage(".question-panel");
     } catch (error) {
       toast(error.message, "error");
     }
@@ -70,16 +77,20 @@ function showQuestion() {
   chosen = null;
   const q = QUESTIONS[step],
     progress = Math.round((step / QUESTIONS.length) * 100);
-  container.innerHTML = `<div class="question-panel"><div class="question-top"><span>QUESTION <strong>${String(step + 1).padStart(2, "0")} / 05</strong></span><span>${correct * 20} PTS EARNED</span></div><div class="progress-track"><div class="progress-bar" style="width:${progress}%"></div></div><h2>${q.question}</h2><p class="question-prompt">Choose the best answer.</p><div class="options-list">${q.options.map((o, i) => `<button class="option" data-answer="${i}" type="button"><span class="option-letter">${String.fromCharCode(65 + i)}</span><span>${o}</span><span class="option-indicator">○</span></button>`).join("")}</div><div class="feedback-zone" id="feedbackZone" aria-live="polite"></div><button type="button" class="button button-primary next-button" id="nextQuestion" disabled>${step === QUESTIONS.length - 1 ? "See results" : "Next question"} ${icon("arrow", 17)}</button></div>`;
+  container.innerHTML = `<div class="question-panel"><div class="question-top"><span>QUESTION <strong>${String(step + 1).padStart(2, "0")} / 05</strong></span><span class="question-earned">${correct * 20} PTS EARNED</span></div><div class="progress-track" role="progressbar" aria-label="Questions completed" aria-valuemin="0" aria-valuemax="${QUESTIONS.length}" aria-valuenow="${step}"><div class="progress-bar" style="width:${progress}%"></div></div><h2 tabindex="-1">${q.question}</h2><p class="question-prompt">Choose the best answer.</p><div class="options-list">${q.options.map((o, i) => `<button class="option" data-answer="${i}" type="button"><span class="option-letter">${String.fromCharCode(65 + i)}</span><span>${o}</span><span class="option-indicator">○</span></button>`).join("")}</div><div class="feedback-zone" id="feedbackZone" aria-live="polite"></div><button type="button" class="button button-primary next-button" id="nextQuestion" disabled>${step === QUESTIONS.length - 1 ? "See results" : "Next question"} ${icon("arrow", 17)}</button></div>`;
   container
     .querySelectorAll("[data-answer]")
     .forEach((btn) =>
       btn.addEventListener("click", () => answer(Number(btn.dataset.answer))),
     );
   container.querySelector("#nextQuestion").addEventListener("click", () => {
+    if (chosen === null) return;
     step++;
     if (step === QUESTIONS.length) complete();
-    else showQuestion();
+    else {
+      showQuestion();
+      revealStage(".question-panel");
+    }
   });
 }
 function answer(index) {
@@ -88,7 +99,9 @@ function answer(index) {
   const q = QUESTIONS[step];
   const right = index === q.answer;
   if (right) correct++;
-  selectedAnswers.push(index);
+  container.querySelector(".question-earned").textContent = `${correct * 20} PTS EARNED`;
+  container.querySelector(".progress-bar").style.width = `${Math.round(((step + 1) / QUESTIONS.length) * 100)}%`;
+  container.querySelector(".progress-track").setAttribute("aria-valuenow", String(step + 1));
   container.querySelectorAll("[data-answer]").forEach((btn) => {
     btn.disabled = true;
     const n = Number(btn.dataset.answer);
@@ -102,22 +115,27 @@ function answer(index) {
 async function complete() {
   if (saving) return;
   saving = true;
-  setGameplayActive(false);
+  // Keep the session protected while a score is being saved or retried.
+  // Switching players during an in-flight save could misattribute the score.
   const points = correct * 20;
-  container.innerHTML = `<div class="game-panel"><div class="mini-eyebrow">CHALLENGE COMPLETE</div><h2>Nice work!</h2><p>Saving your score to the shared leaderboard…</p><div class="spinner"></div></div>`;
+  container.innerHTML = `<div class="game-panel"><div class="mini-eyebrow">CHALLENGE COMPLETE</div><h2 tabindex="-1">Nice work!</h2><p>Saving your score to the leaderboard…</p><div class="spinner"></div></div>`;
+  revealStage(".game-panel");
   try {
     const result = await store.submitScore("tech-sprint", points);
+    setGameplayActive(false);
     showResult(result);
   } catch (error) {
-    container.innerHTML = `<div class="game-panel"><div class="mini-eyebrow">COULDN'T SAVE YOUR SCORE</div><h2>Let's try that again.</h2><p>Your answers are still here. Check your connection and retry so your points count.</p><p class="form-error visible-error" id="saveError"></p><button type="button" class="button button-primary" id="retrySave">Retry save ${icon("refresh", 17)}</button></div>`;
+    container.innerHTML = `<div class="game-panel"><div class="mini-eyebrow">COULDN'T SAVE YOUR SCORE</div><h2 tabindex="-1">Let's try that again.</h2><p>Your answers are still here. Check your connection and retry so your points count.</p><p class="form-error visible-error" id="saveError"></p><button type="button" class="button button-primary" id="retrySave">Retry save ${icon("refresh", 17)}</button></div>`;
     container.querySelector("#saveError").textContent = error.message;
+    revealStage(".game-panel");
     container.querySelector("#retrySave").addEventListener("click", complete);
   } finally {
     saving = false;
   }
 }
 function showResult(result) {
-  container.innerHTML = `<div class="game-panel result-panel"><div class="result-icon">${icon("trophy", 34)}</div><div class="mini-eyebrow">CHALLENGE COMPLETE</div><h2>${correct === 5 ? "Perfect score!" : correct >= 3 ? "Nicely done!" : "Keep exploring!"}</h2><p>You answered ${correct} of 5 questions correctly.</p><div class="result-stats"><div><span>THIS ROUND</span><strong>${result.points}<small>/100</small></strong></div><div><span>YOUR BEST</span><strong>${result.best}<small>/100</small></strong></div><div><span>POINTS GAINED</span><strong>+${result.gained}</strong></div></div><div class="result-actions"><button type="button" class="button button-primary" id="replay">Play again ${icon("refresh", 17)}</button><a class="button button-light" href="../../index.html">Back to Game Hub ${icon("arrow", 17)}</a></div></div>`;
+  container.innerHTML = `<div class="game-panel result-panel"><div class="result-icon">${icon("trophy", 34)}</div><div class="mini-eyebrow">CHALLENGE COMPLETE</div><h2 tabindex="-1">${correct === 5 ? "Perfect score!" : correct >= 3 ? "Nicely done!" : "Keep exploring!"}</h2><p>You answered ${correct} of 5 questions correctly.</p><div class="result-stats"><div><span>THIS ROUND</span><strong>${result.points}<small>/100</small></strong></div><div><span>YOUR BEST</span><strong>${result.best}<small>/100</small></strong></div><div><span>POINTS GAINED</span><strong>+${result.gained}</strong></div></div><div class="result-actions"><button type="button" class="button button-primary" id="replay">Play again ${icon("refresh", 17)}</button><a class="button button-light" href="../../index.html">Back to Game Hub ${icon("arrow", 17)}</a></div></div>`;
+  revealStage(".game-panel");
   container.querySelector("#replay").addEventListener("click", () => {
     step = 0;
     correct = 0;

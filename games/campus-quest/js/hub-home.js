@@ -13,7 +13,6 @@ const el = (id) => document.getElementById(id);
 el("howToPlayButton").addEventListener("click", () =>
   el("howToPlayDialog").showModal(),
 );
-el("settingsDialog")?.remove();
 
 function render() {
   const state = progress.getSnapshot();
