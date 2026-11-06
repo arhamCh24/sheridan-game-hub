@@ -1,0 +1,21 @@
+{
+  "quiz_title": "Sheridan College Computing Program Selector",
+  "questions": [
+    {
+      "id": "Q1",
+      "question": "Which option best describes your current educational or career background?",
+      "options": [
+        {
+          "label": "A",
+          "text": "I’m in high school or recently graduated from high school",
+          "flow": "A"
+        },
+        {
+          "label": "B",
+          "text": "I have college, university, or work experience, or I’m considering a career change",
+          "flow": "B"
+        }
+      ]
+    }
+  ]
+}

@@ -106,7 +106,7 @@ export const GAMES = [
     status: "playable",
     competitive: false,
     href: "games/program-explorer/index.html",
-    duration: "5–10 min",
+    duration: "10 min",
   },
   {
     id: "kahoot",
