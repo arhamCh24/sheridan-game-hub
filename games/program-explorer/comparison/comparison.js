@@ -1,4 +1,5 @@
 import { createQrSvg } from '../../../js/vendor/qr-code.js';
+import { downloadComparisonPdf } from './pdf-export.js';
 
 export function initProgramComparison(programList, switchMode) {
   const programs = programList;
@@ -204,7 +205,10 @@ export function initProgramComparison(programList, switchMode) {
   window.addEventListener('resize', () => {
     if (window.innerWidth <= 700 && programPicker.hidden) setProgramPickerExpanded(true);
   });
-  exportComparisonButton.addEventListener('click', () => window.print());
+  exportComparisonButton.addEventListener('click', () => {
+    const selected = programs.filter(program => selectedProgramNames.has(program.name));
+    downloadComparisonPdf(selected);
+  });
   document.querySelector('#clearCompareButton').addEventListener('click', () => {
     selectedProgramNames.clear();
     comparisonResults.replaceChildren();
