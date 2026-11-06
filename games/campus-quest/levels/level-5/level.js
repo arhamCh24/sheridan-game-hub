@@ -30,7 +30,7 @@ const level5 = {
     ).href,
   },
   completion: {
-    title: "Student Life Adventure Complete! 🎉",
+    title: "Student Life Adventure Complete!",
     prompt: "QUEST COMPLETE",
     message:
       "You explored the student commons. Replay to find another combination of campus-life clues.",

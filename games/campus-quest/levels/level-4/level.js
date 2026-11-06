@@ -30,7 +30,7 @@ const level4 = {
     ).href,
   },
   completion: {
-    title: "Creative Studio Complete! 🎉",
+    title: "Creative Studio Complete!",
     prompt: "QUEST COMPLETE",
     message:
       "You found the creative production tools. Replay to try a different set of six clues.",

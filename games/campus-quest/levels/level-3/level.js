@@ -30,7 +30,7 @@ const level3 = {
     ).href,
   },
   completion: {
-    title: "Library Mystery Solved! 🎉",
+    title: "Library Mystery Solved!",
     prompt: "QUEST COMPLETE",
     message:
       "You solved the Library Mystery. Replay to discover a fresh set of study-space clues.",
