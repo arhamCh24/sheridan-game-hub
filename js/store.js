@@ -496,7 +496,7 @@ export class FirestoreStore extends BaseStore {
 }
 
 export async function initStore({
-  forceDemo = true,
+  forceDemo = false,
   fullBoard = false,
   fullProfiles = false,
 } = {}) {
