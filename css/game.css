@@ -82,13 +82,23 @@
 .game-side-info strong {
   font: 700 28px Outfit;
 }
+/* Decorative rings are deliberately CSS shapes, not a Unicode emoji.  On
+   iOS, the previous ✳ could render as an enormous full-color green symbol. */
 .game-side-pattern {
   position: absolute;
-  font-size: 400px;
-  color: rgba(108, 205, 232, 0.045);
-  right: -145px;
-  bottom: -155px;
-  line-height: 1;
+  width: 220px;
+  height: 220px;
+  border: 1px solid rgba(117, 226, 221, 0.15);
+  border-radius: 50%;
+  box-shadow: 0 0 0 44px rgba(117, 226, 221, 0.045),
+    0 0 0 88px rgba(117, 226, 221, 0.025);
+  right: -105px;
+  bottom: -104px;
+  pointer-events: none;
+}
+.game-side > :not(.game-side-pattern) {
+  position: relative;
+  z-index: 1;
 }
 .game-content {
   min-width: 0;
@@ -330,52 +340,164 @@
   display: block !important;
   margin-bottom: 15px;
 }
+/* Tech Sprint remains a two-panel experience on wider screens. On tablets
+   and phones it becomes a compact banner with a full-width play panel. */
 @media (max-width: 900px) {
   .game-shell {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
   }
   .game-side {
-    padding: 27px 32px;
+    padding: 29px 32px;
   }
   .game-side-mark {
     display: none;
   }
   .game-side h1 {
-    font-size: 47px;
+    font-size: clamp(36px, 6vw, 47px);
+    line-height: 1.08;
+    margin: 12px 0 10px;
   }
-  .game-side-info {
-    margin-top: 18px;
-  }
-  .game-content {
-    min-height: 410px;
+  .game-title-break {
+    display: none;
   }
   .game-side > p {
-    max-width: none;
+    max-width: 520px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+  .game-side-info {
+    margin-top: 19px;
+    gap: 26px;
+    flex-wrap: wrap;
+  }
+  .game-side-info > div {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .game-side-info strong {
+    font-size: 21px;
+  }
+  .game-side-pattern {
+    width: 170px;
+    height: 170px;
+    right: -75px;
+    top: -95px;
+    bottom: auto;
+  }
+  .game-content {
+    min-height: 0;
+    padding: 35px 36px 40px;
+    align-items: flex-start;
   }
 }
 @media (max-width: 550px) {
   .game-main {
-    padding-top: 22px;
+    padding-top: 21px;
+    padding-bottom: 46px;
+  }
+  .game-crumb {
+    font-size: 10px;
+    margin-bottom: 15px;
+  }
+  .game-shell {
+    border-radius: 20px;
   }
   .game-side {
-    padding: 28px 23px;
-  }
-  .game-content {
-    padding: 37px 21px;
+    padding: 23px 23px 22px;
   }
   .game-side h1 {
-    font-size: 44px;
+    font-size: clamp(33px, 9vw, 40px);
+    letter-spacing: -0.055em;
   }
-  .result-stats strong {
-    font-size: 24px;
+  .game-side > p {
+    max-width: 310px;
+    font-size: 13px;
+    line-height: 1.5;
   }
-  .result-stats span {
-    font-size: 8px;
+  .game-side-info {
+    margin-top: 15px;
+    gap: 18px;
   }
-  .result-stats > div {
-    padding: 12px 5px;
+  .game-side-info span {
+    font-size: 9px;
   }
+  .game-side-info strong {
+    font-size: 19px;
+  }
+  .game-content {
+    padding: 28px 23px 30px;
+  }
+  .game-panel h2 {
+    font-size: clamp(30px, 8vw, 38px);
+    line-height: 1.12;
+    margin-bottom: 13px;
+  }
+  .game-panel > p {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+  .game-checklist {
+    gap: 11px;
+    margin: 22px 0 25px;
+  }
+  .game-checklist span {
+    font-size: 13px;
+  }
+  .game-panel > .button,
   .result-actions .button {
     width: 100%;
+    justify-content: center;
   }
+  .question-top {
+    flex-wrap: wrap;
+    gap: 8px;
+    font-size: 9px;
+    margin-bottom: 13px;
+  }
+  .progress-track {
+    margin-bottom: 23px;
+  }
+  .question-panel h2 {
+    font-size: clamp(24px, 6.6vw, 30px);
+    line-height: 1.2;
+  }
+  .question-prompt {
+    margin-bottom: 19px;
+  }
+  .option {
+    min-height: 56px;
+    padding: 12px;
+    gap: 10px;
+    line-height: 1.35;
+    font-size: 14px;
+  }
+  .option-letter {
+    width: 30px;
+    height: 30px;
+  }
+  .result-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .result-stats > div {
+    padding: 13px 8px;
+    gap: 5px;
+  }
+  .result-stats > div:last-child {
+    grid-column: 1 / -1;
+  }
+  .result-stats strong {
+    font-size: 26px;
+  }
+  .result-stats span {
+    font-size: 9px;
+  }
+}
+/* Keeping the new question in view matters on short phones: users may be
+   scrolled far down the options when they press Next. */
+.question-panel {
+  scroll-margin-top: 18px;
 }

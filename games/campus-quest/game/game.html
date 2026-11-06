@@ -60,6 +60,18 @@
 
       <section class="play-layout">
         <div id="roomStage" class="room-stage">
+          <div class="room-mobile-tools">
+            <span id="roomZoomHelp">Find the objects in the scene</span>
+            <button
+              id="zoomRoomButton"
+              class="room-zoom-button"
+              type="button"
+              aria-pressed="false"
+              aria-controls="roomMap"
+            >
+              <span aria-hidden="true">⤢</span> Zoom in
+            </button>
+          </div>
           <div id="roomPanel" class="room-panel">
             <svg
               id="roomMap"
@@ -191,32 +203,6 @@
         <a href="../home.html">Campus Quest Home</a>
       </div>
     </div>
-
-    <dialog id="settingsDialog" class="game-settings-dialog">
-      <form method="dialog">
-        <button class="game-settings-close" value="cancel" aria-label="Close">
-          ×
-        </button>
-      </form>
-
-      <h2>Game Settings</h2>
-
-      <label>
-        <span>
-          <strong>Sound</strong>
-          <small>Use game audio when a level includes it.</small>
-        </span>
-        <input id="soundSetting" type="checkbox" />
-      </label>
-
-      <label>
-        <span>
-          <strong>Show hints</strong>
-          <small>Show the clue hint for the current challenge.</small>
-        </span>
-        <input id="hintSetting" type="checkbox" />
-      </label>
-    </dialog>
 
     <script type="module" src="js/game.js"></script>
     <div id="modalRoot"></div>

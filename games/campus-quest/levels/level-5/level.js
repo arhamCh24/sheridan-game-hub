@@ -3,13 +3,38 @@ const level5 = {
   id: 5,
   gameTitle: "Sheridan Campus Quest",
   roomName: "Student Life Adventure",
-  mission: "Explore the student commons, decode six clues about campus life and find the right places or belongings.",
-  tip: "Look at the tables, recreation corner, service counter and wall signs. Each adventure chooses six of twelve targets.",
-  settings: {timer: true, questions: false, audio: false, scoring: true, randomizeObjects: true, randomClueCount: 6},
-  scoring: {maxScore: 100, wrongClickPenalty: 5, maxTimePenalty: 20, chancesPerClue: 3},
-  timer: {durationSeconds: 300, perfectTimeSeconds: 180},
-  room: {width: 1672, height: 941, backgroundUrl: new URL("../../assets/images/levels/level-5/background.png", import.meta.url).href},
-  completion: {title: "Student Life Adventure Complete! 🎉", prompt: "QUEST COMPLETE", message: "You explored the student commons. Replay to find another combination of campus-life clues." },
+  mission:
+    "Explore the student commons, decode six clues about campus life and find the right places or belongings.",
+  tip: "Look at the tables, recreation corner and wall signs. Each adventure chooses six of eleven targets.",
+  settings: {
+    timer: true,
+    questions: false,
+    audio: false,
+    scoring: true,
+    randomizeObjects: true,
+    randomClueCount: 6,
+  },
+  scoring: {
+    maxScore: 100,
+    wrongClickPenalty: 5,
+    maxTimePenalty: 20,
+    chancesPerClue: 3,
+  },
+  timer: { durationSeconds: 300, perfectTimeSeconds: 180 },
+  room: {
+    width: 1672,
+    height: 941,
+    backgroundUrl: new URL(
+      "../../assets/images/levels/level-5/background.png",
+      import.meta.url,
+    ).href,
+  },
+  completion: {
+    title: "Student Life Adventure Complete! 🎉",
+    prompt: "QUEST COMPLETE",
+    message:
+      "You explored the student commons. Replay to find another combination of campus-life clues.",
+  },
   steps: [
     {
       id: "foosball",
@@ -18,7 +43,8 @@ const level5 = {
       helpHint: "Look across the lower-left foreground of the student commons.",
       foundLabel: "Foosball Table",
       title: "Foosball Table found!",
-      story: "Correct! Shared games can give students a fun way to relax between classes.",
+      story:
+        "Correct! Shared games can give students a fun way to relax between classes.",
       clueType: "text",
     },
     {
@@ -28,7 +54,8 @@ const level5 = {
       helpHint: "Look at the middle-right foreground, next to the notebook.",
       foundLabel: "Blue Water Bottle",
       title: "Blue Water Bottle found!",
-      story: "Correct! Staying hydrated matters whether a student is studying or relaxing.",
+      story:
+        "Correct! Staying hydrated matters whether a student is studying or relaxing.",
       clueType: "text",
     },
     {
@@ -38,17 +65,20 @@ const level5 = {
       helpHint: "Look at the large screen on the far-right foreground table.",
       foundLabel: "Open Laptop",
       title: "Open Laptop found!",
-      story: "Correct! Portable computers make campus group work and independent study easier.",
+      story:
+        "Correct! Portable computers make campus group work and independent study easier.",
       clueType: "text",
     },
     {
       id: "notebooks",
       prompt: "FIND THE OBJECT",
       hint: "Find the pair of spiral-bound notebooks stacked beside the open computer.",
-      helpHint: "Look on the foreground table directly to the right of the blue water bottle.",
+      helpHint:
+        "Look on the foreground table directly to the right of the blue water bottle.",
       foundLabel: "Stacked Notebooks",
       title: "Stacked Notebooks found!",
-      story: "Correct! Notebooks let students capture ideas even when they are away from their devices.",
+      story:
+        "Correct! Notebooks let students capture ideas even when they are away from their devices.",
       clueType: "text",
     },
     {
@@ -58,7 +88,8 @@ const level5 = {
       helpHint: "Look at the bottom-right corner of the foreground table.",
       foundLabel: "Student ID Card",
       title: "Student ID Card found!",
-      story: "Correct! A student ID is one way to identify a member of a college community.",
+      story:
+        "Correct! A student ID is one way to identify a member of a college community.",
       clueType: "text",
     },
     {
@@ -68,17 +99,8 @@ const level5 = {
       helpHint: "Look just behind the open laptop on the right side.",
       foundLabel: "Black Backpack",
       title: "Black Backpack found!",
-      story: "Correct! Backpacks can carry class supplies, chargers and personal belongings.",
-      clueType: "text",
-    },
-    {
-      id: "service-counter",
-      prompt: "FIND THE OBJECT",
-      hint: "Find the long front counter where students can order a drink or snack.",
-      helpHint: "Look across the back-right side of the commons, underneath the menu screens.",
-      foundLabel: "Food Service Counter",
-      title: "Food Service Counter found!",
-      story: "Correct! Campus food service areas give students a place to take a break and eat.",
+      story:
+        "Correct! Backpacks can carry class supplies, chargers and personal belongings.",
       clueType: "text",
     },
     {
@@ -98,7 +120,8 @@ const level5 = {
       helpHint: "Look along the white wall at the upper-right of the scene.",
       foundLabel: "Student Services Sign",
       title: "Student Services Sign found!",
-      story: "Correct! Knowing where to find student services can help visitors access campus support.",
+      story:
+        "Correct! Knowing where to find student services can help visitors access campus support.",
       clueType: "text",
     },
     {
@@ -108,47 +131,211 @@ const level5 = {
       helpHint: "Look near the very top of the right-hand wall.",
       foundLabel: "Cafeteria Sign",
       title: "Cafeteria Sign found!",
-      story: "Correct! Directional signs help students find food and shared facilities.",
+      story:
+        "Correct! Directional signs help students find food and shared facilities.",
       clueType: "text",
     },
     {
       id: "potted-plant",
       prompt: "FIND THE OBJECT",
       hint: "Find the tall green plant growing beside the windows at the left.",
-      helpHint: "Look against the wall of windows in the far-left part of the commons.",
+      helpHint:
+        "Look against the wall of windows in the far-left part of the commons.",
       foundLabel: "Large Potted Plant",
       title: "Large Potted Plant found!",
-      story: "Correct! Indoor plants can bring a natural touch to shared student spaces.",
+      story:
+        "Correct! Indoor plants can bring a natural touch to shared student spaces.",
       clueType: "text",
     },
     {
       id: "ottoman",
       prompt: "FIND THE OBJECT",
       hint: "Find the low round upholstered seat in front of the sofas.",
-      helpHint: "Look near the centre-left of the commons, just behind the recreation game.",
+      helpHint:
+        "Look near the centre-left of the commons, just behind the recreation game.",
       foundLabel: "Round Lounge Ottoman",
       title: "Round Lounge Ottoman found!",
-      story: "Correct! Ottomans give lounge areas flexible seating and places to rest.",
+      story:
+        "Correct! Ottomans give lounge areas flexible seating and places to rest.",
       clueType: "text",
     },
   ],
+
   hotspots: [
-    {type: "polygon", object: "foosball", points: "11,526 305,514 338,513 401,540 470,574 547,612 626,647 654,663 652,678 618,694 495,706 258,727 11,749"},
-    {type: "polygon", object: "foosball", points: "11,749 250,734 494,712 648,690 651,849 633,858 583,870 536,878 510,877 11,934"},
-    {type: "polygon", object: "water-bottle", points: "953,527 966,520 1003,522 1019,532 1022,554 1033,564 1042,578 1043,797 1037,808 1024,812 958,813 944,802 939,781 939,587 944,570 943,550"},
-    {type: "polygon", object: "laptop", points: "1466,544 1672,523 1672,701 1597,789 1370,800 1358,792 1381,709 1402,651 1437,616 1454,594 1464,576"},
-    {type: "polygon", object: "laptop", points: "1363,710 1190,743 1168,751 1171,763 1298,769 1313,777 1355,789 1393,793"},
-    {type: "polygon", object: "notebooks", points: "1059,774 1110,766 1219,773 1309,795 1315,825 1313,838 1302,853 1218,872 1191,870 1061,840 1052,823"},
-    {type: "polygon", object: "student-id", points: "1373,834 1471,848 1519,866 1517,881 1498,902 1394,896 1349,879 1357,858"},
-    {type: "polygon", object: "backpack", points: "1273,486 1297,461 1329,451 1360,455 1394,475 1429,488 1450,519 1462,544 1460,565 1449,586 1438,603 1419,614 1265,613 1249,598 1239,581 1243,551"},
-    {type: "polygon", object: "service-counter", points: "1042,348 1169,345 1217,352 1220,388 1193,403 1043,402"},
-    {type: "polygon", object: "menu-screens", points: "1112,195 1308,184 1318,192 1319,232 1115,236"},
-    {type: "polygon", object: "student-services-sign", points: "1475,91 1503,94 1517,98 1538,95 1645,95 1669,99 1672,150 1541,154 1517,146 1472,144"},
-    {type: "polygon", object: "cafeteria-sign", points: "1476,27 1502,23 1515,28 1532,25 1672,23 1672,67 1531,67 1516,74 1474,70"},
-    {type: "polygon", object: "potted-plant", points: "4,123 22,149 45,144 56,174 84,147 102,164 125,159 141,191 171,193 187,229 171,245 152,229 132,258 102,271 93,308 36,319 18,289 9,243"},
-    {type: "polygon", object: "potted-plant", points: "110,183 128,190 145,166 162,183 178,213 192,243 199,269 188,307 150,315 143,293 141,263"},
-    {type: "polygon", object: "ottoman", points: "472,513 490,503 526,496 629,496 703,504 747,517 752,532 747,542 683,545 618,533 549,521 483,520"},
-    {type: "polygon", object: "ottoman", points: "669,540 748,541 750,639 739,672 699,681 659,674 659,639"},
+    // 1. Foosball — playing area, cabinet and visible leg
+    {
+      type: "polygon",
+      object: "foosball",
+      points:
+        "14,525 50,521 300,513 333,513 363,526 404,543 470,577 531,610 598,643 636,657 652,671 649,680 622,694 555,700 488,707 370,721 224,735 14,747",
+    },
+    {
+      type: "polygon",
+      object: "foosball",
+      points:
+        "14,748 133,741 238,734 370,720 498,708 625,694 651,684 650,846 638,858 583,872 520,882 435,893 337,904 221,920 14,940",
+    },
+    {
+      type: "polygon",
+      object: "foosball",
+      points: "523,877 615,870 615,941 548,941",
+    },
+
+    // 2. Water bottle — cap, body and side handle
+
+    {
+      type: "polygon",
+      object: "water-bottle",
+      points:
+        "952,535 958,530 970,526 1017,526 1033,530 1040,535 1040,552 1035,560 962,560 952,551",
+    },
+    {
+      type: "polygon",
+      object: "water-bottle",
+      points:
+        "961,557 1036,557 1046,566 1056,578 1060,589 1060,792 1057,806 1044,815 966,815 953,809 948,795 948,587 952,574",
+    },
+    {
+      type: "polygon",
+      object: "water-bottle",
+      points:
+        "938,536 947,531 955,534 956,545 948,549 945,558 940,586 938,612 941,615 950,614 950,627 937,627 930,618 930,582 932,550",
+    },
+
+    // 3. Laptop — screen and visible keyboard/base
+    {
+      type: "polygon",
+      object: "laptop",
+      points:
+        "1447,545 1671,518 1671,693 1603,779 1576,790 1373,800 1357,794 1361,771 1372,743 1390,689 1409,625 1428,561",
+    },
+    {
+      type: "polygon",
+      object: "laptop",
+      points:
+        "1175,741 1322,718 1385,704 1395,713 1387,743 1368,776 1360,794 1343,799 1310,788 1269,780 1222,770 1172,757 1167,749",
+    },
+
+    // 4. Stacked notebooks
+
+    {
+      type: "polygon",
+      object: "notebooks",
+      // Upper notebook and spiral binding
+      points:
+        "1067,784 1101,778 1140,769 1177,762 1209,770 1251,780 1297,792 1311,800 1311,817 1295,828 1257,836 1223,843 1182,833 1136,823 1090,810 1066,801",
+    },
+    {
+      type: "polygon",
+      object: "notebooks",
+      // Lower notebook and visible page edges
+      points:
+        "1055,809 1067,802 1090,810 1136,823 1182,833 1223,843 1257,836 1295,828 1311,817 1311,839 1296,850 1262,861 1220,871 1184,862 1138,851 1092,840 1053,827",
+    },
+
+    // 5. Student ID
+    {
+      type: "polygon",
+      object: "student-id",
+      points:
+        "1362,842 1381,835 1421,839 1461,848 1495,857 1516,867 1514,878 1496,898 1478,898 1401,895 1354,881 1347,867",
+    },
+
+    // 6. Backpack
+    {
+      type: "polygon",
+      object: "backpack",
+      points:
+        "1228,573 1230,547 1239,518 1251,499 1273,478 1298,463 1315,461 1329,453 1348,453 1365,467 1387,473 1409,485 1425,510 1436,534 1433,547 1423,555 1412,580 1399,605 1380,615 1269,615 1244,606 1229,592",
+    },
+
+    // 8. Menu screens
+    {
+      type: "polygon",
+      object: "menu-screens",
+      points: "1129,194 1336,184 1336,189 1335,232 1129,242",
+    },
+
+    // 9. Student Services — full sign box
+    {
+      type: "polygon",
+      object: "student-services-sign",
+      points: "1472,92 1668,92 1668,151 1472,151",
+    },
+
+    // 10. Cafeteria — full sign box
+    {
+      type: "polygon",
+      object: "cafeteria-sign",
+      points: "1474,23 1668,23 1668,74 1474,74",
+    },
+
+    // 11. Potted plant — foliage clusters and visible pot
+
+    {
+      type: "polygon",
+      object: "potted-plant",
+      // Left leaves
+      points:
+        "0,143 12,156 26,173 42,184 48,197 33,193 24,185 32,216 52,239 55,258 42,247 22,223 13,198 1,174",
+    },
+    {
+      type: "polygon",
+      object: "potted-plant",
+      // Tall upper leaves
+      points:
+        "44,180 38,155 40,132 47,126 59,141 72,167 74,189 70,209 62,225 57,211 58,187",
+    },
+    {
+      type: "polygon",
+      object: "potted-plant",
+      // Long leaves extending right
+      points:
+        "67,201 80,170 96,156 113,150 130,158 118,168 105,176 94,190 121,179 152,181 179,196 185,207 167,199 145,192 126,197 110,212 97,231 89,253 81,259 83,229",
+    },
+    {
+      type: "polygon",
+      object: "potted-plant",
+      // Lower-left foliage
+      points: "14,226 24,219 36,231 49,254 56,275 51,291 39,279 29,261 16,254",
+    },
+    {
+      type: "polygon",
+      object: "potted-plant",
+      // Lower-right foliage
+      points:
+        "83,251 98,236 113,228 126,240 117,245 105,258 100,277 91,286 80,284",
+    },
+    {
+      type: "polygon",
+      object: "potted-plant",
+      // Brown plant pot
+      points: "43,266 54,261 93,261 100,271 97,313 46,314",
+    },
+
+    // 12. Ottoman — top, visible front and right side
+
+    {
+      type: "polygon",
+      object: "ottoman",
+      // Top cushion
+      points:
+        "468,514 478,505 504,498 536,493 583,491 638,491 690,497 724,506 741,517 745,534 699,540 658,541 610,538 552,536 500,534 470,530",
+    },
+    {
+      type: "polygon",
+      object: "ottoman",
+      // Front face, following the foosball's diagonal obstruction
+      points:
+        "470,530 500,534 552,536 610,538 658,541 658,671 645,666 621,653 593,637 562,621 533,605 506,588 482,573 470,557",
+    },
+    {
+      type: "polygon",
+      object: "ottoman",
+      // Right curved side
+      points:
+        "658,541 699,540 745,534 746,575 746,630 740,652 726,666 701,676 678,681 658,672",
+    },
   ],
 };
 export default level5;
