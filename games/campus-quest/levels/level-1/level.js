@@ -73,7 +73,7 @@ const level1 = {
   --------------------------------------------------------- */
 
   completion: {
-    title: "Campus Discovery Complete! 🎉",
+    title: "Campus Discovery Complete!",
 
     prompt: "QUEST COMPLETE",
 

@@ -846,3 +846,7 @@
     display: none !important;
   }
 }
+
+.welcome-inline-icon { display: inline-block; vertical-align: -4px; color: #2583a7; }
+.welcome-inline-icon svg { display: block; }
+.program-explorer .game-side-mark svg { display: block; }

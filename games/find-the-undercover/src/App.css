@@ -610,3 +610,6 @@ button:disabled {
     align-items: center;
   }
 }
+
+.round-result-icon { display: flex; justify-content: center; align-items: center; color: #1488b7; margin-bottom: 8px; }
+.round-result-icon svg { display: block; }

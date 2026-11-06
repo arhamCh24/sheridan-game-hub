@@ -30,262 +30,133 @@ const level5 = {
     ).href,
   },
   completion: {
-    title: "Student Life Adventure Complete! 🎉",
+    title: "Student Life Adventure Complete!",
     prompt: "QUEST COMPLETE",
     message:
       "You explored the student commons. Replay to find another combination of campus-life clues.",
   },
   steps: [
-    /* =====================================================
-     FOOSBALL
-  ===================================================== */
     {
       id: "foosball",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "A quick break between classes can become a friendly competition when miniature players are controlled using rods instead of a controller.",
-
-      helpHint:
-        "Look across the lower-left foreground of the student commons for a recreational table with rows of miniature football players.",
-
+      hint: "Find the recreational table game with rows of miniature football players.",
+      helpHint: "Look across the lower-left foreground of the student commons.",
       foundLabel: "Foosball Table",
-
-      title: "Foosball table found!",
-
+      title: "Foosball Table found!",
       story:
-        "Correct. Recreational games give students opportunities to relax, socialize, and enjoy friendly competition between classes.",
-
+        "Correct! Shared games can give students a fun way to relax between classes.",
       clueType: "text",
     },
-
-    /* =====================================================
-     WATER BOTTLE
-  ===================================================== */
     {
       id: "water-bottle",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "Whether someone is studying or taking a break, this reusable companion keeps a refreshing drink within reach throughout the day.",
-
-      helpHint:
-        "Inspect the middle-right foreground study table for a tall blue drink container standing beside the notebook.",
-
+      hint: "Find the tall blue reusable bottle on the front study table.",
+      helpHint: "Look at the middle-right foreground, next to the notebook.",
       foundLabel: "Blue Water Bottle",
-
-      title: "Water bottle found!",
-
+      title: "Blue Water Bottle found!",
       story:
-        "Correct. Keeping water nearby helps students stay hydrated during busy days, while reusable containers reduce unnecessary waste.",
-
+        "Correct! Staying hydrated matters whether a student is studying or relaxing.",
       clueType: "text",
     },
-
-    /* =====================================================
-     LAPTOP
-  ===================================================== */
     {
       id: "laptop",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "A student does not always need a computer lab to complete an assignment. This portable device can turn an ordinary table into a workspace.",
-
-      helpHint:
-        "Look at the far-right foreground study table for an open silver computer with a large screen.",
-
+      hint: "Find the silver portable computer open on the front-right table.",
+      helpHint: "Look at the large screen on the far-right foreground table.",
       foundLabel: "Open Laptop",
-
-      title: "Laptop found!",
-
+      title: "Open Laptop found!",
       story:
-        "Correct. Portable computers allow students to continue coursework, collaborate, and access digital resources from shared campus spaces.",
-
+        "Correct! Portable computers make campus group work and independent study easier.",
       clueType: "text",
     },
-
-    /* =====================================================
-     NOTEBOOKS
-  ===================================================== */
     {
       id: "notebooks",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "When ideas arrive faster than someone can organize them digitally, these bound pages provide a familiar place for notes and sketches.",
-
+      hint: "Find the pair of spiral-bound notebooks stacked beside the open computer.",
       helpHint:
-        "Look on the foreground study table, directly to the right of the blue water bottle, for two stacked spiral-bound writing pads.",
-
+        "Look on the foreground table directly to the right of the blue water bottle.",
       foundLabel: "Stacked Notebooks",
-
-      title: "Notebooks found!",
-
+      title: "Stacked Notebooks found!",
       story:
-        "Correct. Paper notebooks remain practical tools for taking lecture notes, planning assignments, and organizing ideas without electronic devices.",
-
+        "Correct! Notebooks let students capture ideas even when they are away from their devices.",
       clueType: "text",
     },
-
-    /* =====================================================
-     STUDENT ID CARD
-  ===================================================== */
     {
       id: "student-id",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "Small enough to fit inside a wallet, this personal item can help prove someone's connection to the college community.",
-
-      helpHint:
-        "Search near the bottom-right edge of the foreground study table for a small identification card lying flat.",
-
+      hint: "Find the small identification card near the front edge of the table.",
+      helpHint: "Look at the bottom-right corner of the foreground table.",
       foundLabel: "Student ID Card",
-
-      title: "Student ID card found!",
-
+      title: "Student ID Card found!",
       story:
-        "Correct. Student identification provides a convenient way to verify college membership and may help students access campus services.",
-
+        "Correct! A student ID is one way to identify a member of a college community.",
       clueType: "text",
     },
-
-    /* =====================================================
-     BACKPACK
-  ===================================================== */
     {
       id: "backpack",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "Moving between classes becomes easier when books, chargers, and personal belongings can all travel together in one convenient place.",
-
-      helpHint:
-        "Look on the chair just behind the open laptop at the right side of the foreground study area for a black carrying bag.",
-
+      hint: "Find the black bag placed on a chair near the front table.",
+      helpHint: "Look just behind the open laptop on the right side.",
       foundLabel: "Black Backpack",
-
-      title: "Backpack found!",
-
+      title: "Black Backpack found!",
       story:
-        "Correct. Carrying essential supplies together helps students stay organized while moving between classrooms and shared campus spaces.",
-
+        "Correct! Backpacks can carry class supplies, chargers and personal belongings.",
       clueType: "text",
     },
-
-    /* =====================================================
-     MENU SCREENS
-  ===================================================== */
     {
       id: "menu-screens",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "Before ordering something to eat, visitors can check these illuminated displays to discover what is available and make their selection.",
-
-      helpHint:
-        "Look high above the food service counter toward the back of the student commons for a row of glowing digital displays.",
-
+      hint: "Find the glowing screens showing items available at the food counter.",
+      helpHint: "Look high above the service counter in the back of the scene.",
       foundLabel: "Cafe Menu Screens",
-
-      title: "Cafe menu screens found!",
-
-      story:
-        "Correct. Digital menus help customers explore available food and drink options while allowing businesses to update their displays.",
-
+      title: "Cafe Menu Screens found!",
+      story: "Correct! Menu displays can help visitors choose food and drinks.",
       clueType: "text",
     },
-
-    /* =====================================================
-     STUDENT SERVICES SIGN
-  ===================================================== */
     {
       id: "student-services-sign",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "When someone needs academic or campus support but does not know where to go, this directional information can help them find the right place.",
-
-      helpHint:
-        "Inspect the white wall in the upper-right section of the commons for a sign directing visitors toward student support services.",
-
+      hint: "Find the wall sign showing the direction of student support services.",
+      helpHint: "Look along the white wall at the upper-right of the scene.",
       foundLabel: "Student Services Sign",
-
-      title: "Student services sign found!",
-
+      title: "Student Services Sign found!",
       story:
-        "Correct. Clear directional signs help students locate support services and navigate campus facilities with greater confidence.",
-
+        "Correct! Knowing where to find student services can help visitors access campus support.",
       clueType: "text",
     },
-
-    /* =====================================================
-     CAFETERIA SIGN
-  ===================================================== */
     {
       id: "cafeteria-sign",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "A visitor who is hungry between classes may follow this simple directional clue to find somewhere to purchase a meal.",
-
-      helpHint:
-        "Look near the very top of the right-hand wall for a sign pointing toward the campus dining area.",
-
+      hint: "Find the sign pointing visitors toward the cafeteria.",
+      helpHint: "Look near the very top of the right-hand wall.",
       foundLabel: "Cafeteria Sign",
-
-      title: "Cafeteria sign found!",
-
+      title: "Cafeteria Sign found!",
       story:
-        "Correct. Campus wayfinding signs help students and visitors find dining areas and other essential facilities without unnecessary confusion.",
-
+        "Correct! Directional signs help students find food and shared facilities.",
       clueType: "text",
     },
-
-    /* =====================================================
-     POTTED PLANT
-  ===================================================== */
     {
       id: "potted-plant",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "Even inside a busy student commons, something green and growing can bring a little of the outdoors into the room.",
-
+      hint: "Find the tall green plant growing beside the windows at the left.",
       helpHint:
-        "Look beside the large windows along the far-left side of the student commons for a tall leafy indoor plant.",
-
+        "Look against the wall of windows in the far-left part of the commons.",
       foundLabel: "Large Potted Plant",
-
-      title: "Potted plant found!",
-
+      title: "Large Potted Plant found!",
       story:
-        "Correct. Indoor plants add a natural element to shared spaces and can make campus lounges feel more comfortable and welcoming.",
-
+        "Correct! Indoor plants can bring a natural touch to shared student spaces.",
       clueType: "text",
     },
-
-    /* =====================================================
-     OTTOMAN
-  ===================================================== */
     {
       id: "ottoman",
-
       prompt: "FIND THE OBJECT",
-
-      hint: "Not every comfortable place to sit looks like an ordinary chair. This low, padded piece of furniture offers flexible seating in a shared lounge.",
-
+      hint: "Find the low round upholstered seat in front of the sofas.",
       helpHint:
-        "Inspect the centre-left area of the student commons, just behind the recreational game table and in front of the sofas, for a low round upholstered seat.",
-
+        "Look near the centre-left of the commons, just behind the recreation game.",
       foundLabel: "Round Lounge Ottoman",
-
-      title: "Ottoman found!",
-
+      title: "Round Lounge Ottoman found!",
       story:
-        "Correct. Flexible lounge furniture gives students additional places to sit, relax, and socialize between their academic activities.",
-
+        "Correct! Ottomans give lounge areas flexible seating and places to rest.",
       clueType: "text",
     },
   ],

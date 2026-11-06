@@ -922,3 +922,7 @@ body.debug-hotspots .hotspot {
 #leaderboardButton.completion-leaderboard-button.hidden {
   display: none;
 }
+
+/* Use vector icons for Quest clues, help and completion feedback. */
+.clue-icon svg, .tip-symbol svg, .popup-symbol svg { display: block; margin: auto; }
+.popup-symbol { color: #0877a7; }

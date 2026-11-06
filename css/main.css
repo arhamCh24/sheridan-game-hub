@@ -1485,3 +1485,12 @@ p {
   .header-score { gap: 5px; padding: 0 7px; }
   .header-switch { padding: 0 7px; font-size: 11px; }
 }
+
+/* SVG instead of Unicode decorative marks: identical rendering in Safari. */
+.card-status-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: currentColor; margin-right: 4px; vertical-align: 1px; }
+.card-spark-one svg, .card-spark-two svg { display: block; }
+.step-icon svg { display: block; }
+.ribbon-spark svg { display: block; }
+.art-floating > span svg { display: block; }
+.art-center-icon span svg { display: block; }
+.qr-placeholder svg { display: block; }
