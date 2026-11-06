@@ -216,7 +216,10 @@ input:focus-visible {
   overflow: hidden;
 }
 .profile-caret {
-  opacity: 0.65;
+  display: inline-flex;
+  align-items: center;
+  opacity: 0.75;
+  flex: none;
 }
 .hero-section {
   background: #092c5a;
@@ -1274,7 +1277,7 @@ p {
     padding: 0 9px;
     font-size: 12px;
   }
-  .header-profile svg {
+  .header-profile > svg {
     display: none;
   }
   .header-profile b {
@@ -1460,4 +1463,25 @@ p {
   .header-inner { flex-wrap: wrap; padding-block: 12px; row-gap: 9px; }
   .header-actions { width: 100%; justify-content: flex-end; }
   .player-widget { justify-content: flex-end; flex-wrap: wrap; }
+}
+
+/* Keep the player name visible beside its dropdown indicator on narrow screens.
+   The dedicated Switch player button remains a separate action. */
+@media (max-width: 600px) {
+  .header-actions, .player-widget { min-width: 0; }
+  .player-widget { flex-wrap: nowrap; }
+  .header-score { flex: 0 0 auto; }
+  .header-profile {
+    min-width: 0;
+    flex: 0 1 auto;
+    gap: 6px;
+    padding: 0 10px;
+  }
+  .header-profile b { min-width: 0; max-width: 95px; }
+  .header-switch { flex: 0 0 auto; }
+}
+@media (max-width: 360px) {
+  .header-profile b { max-width: 55px; }
+  .header-score { gap: 5px; padding: 0 7px; }
+  .header-switch { padding: 0 7px; font-size: 11px; }
 }

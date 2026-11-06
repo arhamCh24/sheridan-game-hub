@@ -1,37 +1,43 @@
-SHERIDAN GAME HUB — SHARED NAVBAR, LOGO & FIRESTORE FIX
+SHERIDAN GAME HUB — TECH SPRINT + HARDWARE NAVBAR MOBILE UPDATE
+Based on Sheridan-Campus-Quest-Mobile-Fix.zip from the previous update.
 
-UPDATE-ONLY ZIP
-1. Back up your current repository.
-2. Extract these files into the ROOT of your existing sheridan-game-hub folder.
-3. Do not replace or delete your .git directory. This update ZIP contains no .git files.
-4. Check the portal home, Campus Quest home/game, Hardware Challenge, Find the Undercover, Tech Sprint and Program Explorer.
-5. Run: node --test tests/*.test.mjs
-6. Copy the ENTIRE firestore.rules file into Firebase Console > Firestore Database > Rules; verify with Rules Playground; click Publish. Copying to GitHub does NOT publish Firestore rules.
-7. Then commit/push after checking: git add -A && git commit -m "Unify Game Hub branding, player switching and Firestore rules" && git push origin HEAD
+OPTION A: COMPLETE PROJECT ZIP
+- Back up your existing repository folder.
+- Unzip Sheridan-Game-Hub-Tech-Sprint-Mobile-Fix.zip.
+- Copy project contents over your repository, preserving your existing .git folder.
 
-NOTE: The Firebase rules were NOT published by this update. Live testing against Firebase still required.
-The global TV leaderboard remains read-only and is intentionally not a player-switching station.
+OPTION B: CHANGED FILES ZIP (recommended if your existing repository is current)
+- Unzip Sheridan-Tech-Sprint-Changed-Files.zip.
+- Copy its files into the ROOT of your existing sheridan-game-hub folder.
+- Keep the same relative paths and allow changed files to overwrite their older versions.
+- No assets, Firebase rules, or scoring configuration were changed in this update.
 
-FILES UPDATED:
-assets/favicon.png
-assets/sheridan-logo.webp
-css/main.css
-firestore.rules
-games/campus-quest/css/hub-integration.css
-games/campus-quest/game/game.html
-games/campus-quest/home.html
-games/campus-quest/js/hub-integration.js
-games/find-the-undercover/index.html
-games/hardware-challenge/index.html
-games/program-explorer/index.html
-games/tech-sprint/index.html
-index.html
-js/chrome.js
-js/config.js
-js/portal.js
-js/ui.js
-leaderboard.html
-scripts/sync-firestore-rules.mjs
-tests/hardware-challenge.test.mjs
-tests/navbar-switch.test.mjs
-tests/shared-navbar.test.mjs
+UPDATES
+- Tech Sprint: smaller iPhone hero, non-emoji decoration, readable questions,
+  touch-friendly answers, compact results, no horizontal overflow.
+- Tech Sprint: newly rendered questions/results scroll into view; question progress
+  and earned points update immediately after answering.
+- Tech Sprint: keep the session protected during score saving; failed saves can
+  be retried without losing the attempt.
+- Hardware Challenge/shared navbar: restore the player name on mobile and use
+  a real SVG down-chevron next to it, keeping Switch player as a separate control.
+- Two Tech Sprint automated regression tests added.
+
+VERIFY
+1. Open Tech Sprint on iPhone: intro, all five questions, result, replay.
+2. Open Hardware Challenge on iPhone: check header name, caret and Switch player.
+3. On desktop, verify existing layout and player navigation.
+4. Run: node --test tests/*.test.mjs
+   Expected: 35 pass, 1 existing failure in Campus Quest Level 3 photo-hotspot
+   reference mismatch. This update intentionally does not change Campus Quest.
+
+IMPORTANT CONFIGURATION NOTE
+The inherited js/store.js currently defaults initStore({ forceDemo = true }),
+and js/config.js references a demo/test Firebase project. Scores are therefore
+browser-local by default. No Firebase configuration was changed here.
+Confirm production mode and Firestore Rules separately before a real Open House.
+
+SUGGESTED COMMIT
+ git add -A
+ git commit -m "fix(game-hub): polish Tech Sprint mobile UX and hardware player menu"
+ git push origin HEAD

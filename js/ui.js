@@ -36,7 +36,7 @@ function renderWidget() {
     widget.querySelector("button").addEventListener("click", () => openJoin());
   } else {
     const score = uiStore.currentTotal();
-    widget.innerHTML = `<span class="header-score">${icon("trophy", 16)} <b>${score}</b> <span>PTS</span></span><button type="button" class="header-profile" id="profileButton" aria-label="Player menu">${icon("user", 16)} <b>${escapeHtml(player.displayName)}</b> <span class="profile-caret">⌄</span></button><button type="button" class="header-switch" id="switchPlayerButton" aria-label="Switch player">${icon("users", 16)} <span>Switch player</span></button>`;
+    widget.innerHTML = `<span class="header-score">${icon("trophy", 16)} <b>${score}</b> <span>PTS</span></span><button type="button" class="header-profile" id="profileButton" aria-label="Player menu">${icon("user", 16)} <b>${escapeHtml(player.displayName)}</b> <span class="profile-caret">${icon("chevron-down", 15)}</span></button><button type="button" class="header-switch" id="switchPlayerButton" aria-label="Switch player">${icon("users", 16)} <span>Switch player</span></button>`;
     widget.querySelector("#profileButton").addEventListener("click", openProfile);
     widget.querySelector("#switchPlayerButton").addEventListener("click", () => switchCurrentPlayer());
   }
